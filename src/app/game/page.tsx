@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react'
 import CopyCodeBadge from '@/components/CopyCodeBadge'
 import PlayerCard from '@/components/PlayerCard'
+import { ModeToggle } from '@/components/ModeToggle'
 
 const Game = () => {
 
@@ -45,6 +46,7 @@ const Game = () => {
     return (
         <div className='flex flex-col gap-2 justify-center items-center px-10 py-4'>
             <div className='flex justify-between items-center w-full'>
+                <ModeToggle />
                 <Button onClick={() => { router.push('/') }}>
                     <ChevronLeft />
                     На Главную

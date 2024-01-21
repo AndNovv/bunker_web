@@ -7,74 +7,25 @@ import { socket } from '@/socket'
 import { CardType, PlayerType } from '../../types/types';
 import { redirect, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import Characteristic from '@/components/Characteristic'
-import { Input } from '@/components/ui/input'
 import { ChevronLeft } from 'lucide-react'
 import CopyCodeBadge from '@/components/CopyCodeBadge'
-import PlayerCard from '@/components/PlayerCard'
 
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { ModeToggle } from '@/components/ModeToggle'
 
-const invoices = [
-    {
-        invoice: "INV001",
-        paymentStatus: "Paid",
-        totalAmount: "$250.00",
-        paymentMethod: "Credit Card",
-    },
-    {
-        invoice: "INV002",
-        paymentStatus: "Pending",
-        totalAmount: "$150.00",
-        paymentMethod: "PayPal",
-    },
-    {
-        invoice: "INV003",
-        paymentStatus: "Unpaid",
-        totalAmount: "$350.00",
-        paymentMethod: "Bank Transfer",
-    },
-    {
-        invoice: "INV004",
-        paymentStatus: "Paid",
-        totalAmount: "$450.00",
-        paymentMethod: "Credit Card",
-    },
-    {
-        invoice: "INV005",
-        paymentStatus: "Paid",
-        totalAmount: "$550.00",
-        paymentMethod: "PayPal",
-    },
-    {
-        invoice: "INV006",
-        paymentStatus: "Pending",
-        totalAmount: "$200.00",
-        paymentMethod: "Bank Transfer",
-    },
-    {
-        invoice: "INV007",
-        paymentStatus: "Unpaid",
-        totalAmount: "$300.00",
-        paymentMethod: "Credit Card",
-    },
-]
 
 const Voting = () => {
 
-    const { code, name, playerId, players, updatePlayers } = useGameInfo((state) => {
+    const { code, playerId, players, updatePlayers } = useGameInfo((state) => {
         return {
             code: state.code,
-            name: state.name,
             playerId: state.playerId,
             players: state.players,
             updatePlayers: state.updatePlayers,
@@ -84,58 +35,63 @@ const Voting = () => {
     // Проверку нужно исправить
     if (code === '') redirect('/')
 
-    const player = players[playerId]
-
     const router = useRouter()
-    const { toast } = useToast()
+
+    const [vote, setVote] = useState(-1)
+    const [voted, setVoted] = useState(false)
+    const [readyCount, setReadyCount] = useState(0)
 
     useEffect(() => {
-        socket.on("char_revealed_response", (players: PlayerType[]) => {
-            updatePlayers(players)
+        socket.on("vote_response", (readyCount: number) => {
+            setReadyCount(readyCount)
         })
 
+
         return () => {
-            socket.off("char_revealed_response")
+            socket.off("vote_response")
         }
     }, [])
 
+    const voteHandle = () => {
+        setVoted(true)
+        socket.emit('vote', { code, playerId, vote })
+    }
+
     return (
-        <div className='flex flex-col gap-2 justify-center items-center px-10 py-4'>
+        <div className='flex flex-col gap-4 justify-center items-center px-10 py-4'>
             <div className='flex justify-between items-center w-full'>
+                <ModeToggle />
                 <Button onClick={() => { router.push('/') }}>
                     <ChevronLeft />
                     На Главную
                 </Button>
+                <p>{`Проголосовало: ${readyCount}/${players.length}`}</p>
                 <p>{`Ваш ID: ${playerId}`}</p>
                 <CopyCodeBadge code={code} />
             </div>
             <Table>
-                <TableCaption>A list of your recent invoices.</TableCaption>
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="w-[100px]">Invoice</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Method</TableHead>
-                        <TableHead className="text-right">Amount</TableHead>
+                        <TableHead>Имя</TableHead>
+                        <TableHead>Возраст</TableHead>
+                        <TableHead>Профессия</TableHead>
+                        <TableHead>Здоровье</TableHead>
+                        <TableHead className="text-right">Фобия</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {invoices.map((invoice) => (
-                        <TableRow key={invoice.invoice}>
-                            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                            <TableCell>{invoice.paymentStatus}</TableCell>
-                            <TableCell>{invoice.paymentMethod}</TableCell>
-                            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                    {players.map((player, index) => (
+                        <TableRow onClick={() => setVote(index)} className={vote === index ? 'bg-accent cursor-pointer hover:bg-accent' : 'cursor-pointer'} key={`playerinfo${index}`}>
+                            <TableCell className="font-medium">{player.characteristics.name.value}</TableCell>
+                            <TableCell>{player.characteristics.age.value}</TableCell>
+                            <TableCell>{player.characteristics.profession.value}</TableCell>
+                            <TableCell>{player.characteristics.health.value}</TableCell>
+                            <TableCell className="text-right">{player.characteristics.phobia.value}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
-                <TableFooter>
-                    <TableRow>
-                        <TableCell colSpan={3}>Total</TableCell>
-                        <TableCell className="text-right">$2,500.00</TableCell>
-                    </TableRow>
-                </TableFooter>
             </Table>
+            <Button onClick={voteHandle} disabled={vote === -1 || voted}>Голосовать</Button>
         </div>
     )
 }

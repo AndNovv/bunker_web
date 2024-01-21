@@ -18,6 +18,7 @@ import { redirect } from 'next/navigation'
 
 import { ChevronLeft } from 'lucide-react';
 import CopyCodeBadge from '@/components/CopyCodeBadge'
+import { ModeToggle } from '@/components/ModeToggle'
 
 
 const Waiting = () => {
@@ -62,6 +63,7 @@ const Waiting = () => {
     return (
         <div className='flex flex-col gap-10 px-10 py-10'>
             <div className='flex justify-between items-center'>
+                <ModeToggle />
                 <Button onClick={() => { router.push('/') }}>
                     <ChevronLeft />
                     На Главную

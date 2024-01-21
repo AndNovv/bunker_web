@@ -27,6 +27,7 @@ export type PlayerType = {
     name: string,
     host: boolean,
     ready: boolean,
+    votes: number,
     characteristics: PlayerCharachteristicsType
 }
 
