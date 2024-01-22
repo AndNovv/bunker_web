@@ -3,22 +3,37 @@ import { cn } from '@/lib/utils'
 import { socket } from '@/socket'
 import { CardType, Charachteristic } from '@/types/types'
 import React from 'react'
+import { useToast } from "@/components/ui/use-toast"
 
 
 const Characteristic = ({ char, cardType }: { char: Charachteristic<string, string>, cardType: CardType }) => {
 
-    const { code, playerId } = useGameInfo((state) => {
+    const { code, playerId, players, round } = useGameInfo((state) => {
         return {
             code: state.code,
             playerId: state.playerId,
+            players: state.players,
+            round: state.round,
             updatePlayers: state.updatePlayers
         }
     })
 
+    const player = players[playerId]
+
+    const { toast } = useToast()
+
     const revealChar = () => {
         if (char.hidden) {
-            console.log('char revealed')
-            socket.emit("char_revealed", { code, playerId, charTitle: char.key })
+            if (player.revealedCount < round) {
+                socket.emit("char_revealed", { code, playerId, charTitle: char.key })
+            }
+            else {
+                toast({
+                    title: 'Остановитесь',
+                    description: 'Вы уже раскрыли достаточно характеристик',
+                    variant: 'destructive'
+                })
+            }
         }
     }
 

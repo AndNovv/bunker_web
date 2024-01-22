@@ -5,7 +5,7 @@ import { useGameInfo } from '../../hooks/useGameInfo'
 import { useToast } from "@/components/ui/use-toast"
 import { socket } from '@/socket'
 import { PlayerType } from '../../types/types';
-import { redirect, useRouter } from 'next/navigation';
+import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react'
 import CopyCodeBadge from '@/components/CopyCodeBadge'
@@ -28,7 +28,10 @@ const Preparation = () => {
     // Проверку нужно исправить
     if (code === '') redirect('/')
 
-    const [readyPlayers, setReadyPlayers] = useState(0)
+    const searchParams = useSearchParams()
+    const readyInit = Number(searchParams.get("ready"))
+
+    const [readyPlayers, setReadyPlayers] = useState(readyInit)
     const [ready, setReady] = useState(false)
 
     const player = players[playerId]

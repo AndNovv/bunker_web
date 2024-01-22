@@ -5,21 +5,21 @@ export type responseType<TData> = {
     message: string
 }
 
-export type joinDataResponse = {
-    code: string,
+export type JoinDataResponse = {
     name: string,
     playerId: number,
-    players: PlayerType[],
-    gameStatus: 'waiting' | 'preparing'
+    game: GameType,
 }
 
-export type GameStatus = 'waiting' | 'preparing' | 'in game' | 'voting' | 'results'
+export type GameStatus = 'waiting' | 'preparing' | 'in game' | 'discussion' | 'voting' | 'second voting' | 'results'
 
 export type GameType = {
     gamestatus: GameStatus,
     code: string,
+    round: number,
     countOfReadyPlayers: number,
     players: PlayerType[],
+    secondVotingOptions: number[],
 }
 
 export type PlayerType = {
@@ -28,7 +28,9 @@ export type PlayerType = {
     host: boolean,
     ready: boolean,
     votes: number,
-    characteristics: PlayerCharachteristicsType
+    characteristics: PlayerCharachteristicsType,
+    revealedCount: number,
+    eliminated: boolean,
 }
 
 export type PlayerCharachteristicsType = {
@@ -48,5 +50,10 @@ export type Charachteristic<TTitle, Tvalue> = {
     value: Tvalue,
     hidden: boolean
 }
+
+export type VotingResultsType = {
+    playerId: number,
+    votes: number,
+}[]
 
 export type CardType = 'preparation card' | 'player game card' | 'opponent game card'

@@ -2,13 +2,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useGameInfo } from '../../hooks/useGameInfo'
 
-import { useToast } from "@/components/ui/use-toast"
 import { socket } from '@/socket'
-import { CardType, PlayerType } from '../../types/types';
+import { VotingResultsType } from '../../types/types';
 import { redirect, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react'
 import CopyCodeBadge from '@/components/CopyCodeBadge'
+import { useSearchParams } from 'next/navigation'
 
 import {
     Table,
@@ -23,12 +23,13 @@ import { ModeToggle } from '@/components/ModeToggle'
 
 const Voting = () => {
 
-    const { code, playerId, players, updatePlayers } = useGameInfo((state) => {
+    const { code, playerId, players, eliminatePlayer, incrementRound } = useGameInfo((state) => {
         return {
             code: state.code,
             playerId: state.playerId,
             players: state.players,
-            updatePlayers: state.updatePlayers,
+            eliminatePlayer: state.eliminatePlayer,
+            incrementRound: state.incrementRound,
         }
     })
 
@@ -37,18 +38,47 @@ const Voting = () => {
 
     const router = useRouter()
 
+    const searchParams = useSearchParams()
+    const secondVoting = searchParams.get("second_voting") === 'true' ? true : false
+
+    const secondVotingOptionsString = searchParams.get("options")
+    const secondVotingOptionsParam = secondVotingOptionsString ? JSON.parse(decodeURIComponent(secondVotingOptionsString)) : [];
+    const [secondVote, setSecondVote] = useState(secondVoting)
+    const [secondVotingOptions, setSecondVotingOptions] = useState<number[]>(secondVotingOptionsParam)
+
     const [vote, setVote] = useState(-1)
     const [voted, setVoted] = useState(false)
-    const [readyCount, setReadyCount] = useState(0)
+
+    const readyInit = Number(searchParams.get("ready"))
+
+    const [readyCount, setReadyCount] = useState(readyInit)
 
     useEffect(() => {
         socket.on("vote_response", (readyCount: number) => {
             setReadyCount(readyCount)
         })
 
+        socket.on("end_of_voting", ({ votingResults, eliminatedPlayerId }: { votingResults: VotingResultsType, eliminatedPlayerId: number }) => {
+            console.log(votingResults)
+            console.log(eliminatedPlayerId)
+            eliminatePlayer(eliminatedPlayerId)
+            incrementRound()
+            const votingString = JSON.stringify(votingResults);
+            router.push(`/votingresults?results=${encodeURIComponent(votingString)}&eliminated=${players[eliminatedPlayerId].name}`)
+        })
+
+        socket.on("second_voting", (votingResults: VotingResultsType) => {
+            setVote(-1)
+            setReadyCount(0)
+            setVoted(false)
+            setSecondVote(true)
+            setSecondVotingOptions(votingResults.map((el) => el.playerId))
+        })
 
         return () => {
             socket.off("vote_response")
+            socket.off("end_of_voting")
+            socket.off("second_voting")
         }
     }, [])
 
@@ -69,6 +99,7 @@ const Voting = () => {
                 <p>{`Ваш ID: ${playerId}`}</p>
                 <CopyCodeBadge code={code} />
             </div>
+            {secondVote && <h2 className='text-center text-xl'>{`Голоса разделились между ${secondVotingOptions.length} игроками. Попробуйте обсудить ваше решение еще раз, если вы снова не сможете договориться, игру покинет случайный кандидат!`}</h2>}
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -80,13 +111,22 @@ const Voting = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {players.map((player, index) => (
+                    {!secondVote && players.map((player, index) => (
                         <TableRow onClick={() => setVote(index)} className={vote === index ? 'bg-accent cursor-pointer hover:bg-accent' : 'cursor-pointer'} key={`playerinfo${index}`}>
                             <TableCell className="font-medium">{player.characteristics.name.value}</TableCell>
                             <TableCell>{player.characteristics.age.value}</TableCell>
                             <TableCell>{player.characteristics.profession.value}</TableCell>
                             <TableCell>{player.characteristics.health.value}</TableCell>
                             <TableCell className="text-right">{player.characteristics.phobia.value}</TableCell>
+                        </TableRow>
+                    ))}
+                    {secondVote && secondVotingOptions.map((id, index) => (
+                        <TableRow onClick={() => setVote(id)} className={vote === id ? 'bg-accent cursor-pointer hover:bg-accent' : 'cursor-pointer'} key={`playerinfo${index}`}>
+                            <TableCell className="font-medium">{players[id].characteristics.name.value}</TableCell>
+                            <TableCell>{players[id].characteristics.age.value}</TableCell>
+                            <TableCell>{players[id].characteristics.profession.value}</TableCell>
+                            <TableCell>{players[id].characteristics.health.value}</TableCell>
+                            <TableCell className="text-right">{players[id].characteristics.phobia.value}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

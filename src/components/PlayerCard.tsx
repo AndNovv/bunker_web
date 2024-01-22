@@ -20,7 +20,10 @@ const PlayerCard = React.memo(function PlayerCard({ player, cardType, nameInput 
         <Card className="w-[350px]">
             <CardHeader>
                 <CardTitle>{player.name}</CardTitle>
-                <CardDescription>{player.host ? 'Хост' : 'Игрок'}</CardDescription>
+                <CardDescription>
+                    <p>{player.host ? 'Хост' : 'Игрок'}</p>
+                    <p>{player.eliminated ? 'Изгнан' : 'В игре'}</p>
+                </CardDescription>
             </CardHeader>
             <CardContent>
                 <div className='flex flex-col gap-2'>

@@ -7,9 +7,12 @@ type GameInfoType = {
     name: string,
     playerId: number,
     players: PlayerType[],
-    initialStart: (code: string, name: string, playerId: number, players: PlayerType[]) => void,
+    round: number,
+    initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[]) => void,
     addNewPlayer: (player: PlayerType) => void,
     updatePlayers: (players: PlayerType[]) => void,
+    eliminatePlayer: (playerId: number) => void,
+    incrementRound: () => void,
 }
 
 export const useGameInfo = create<GameInfoType>((set) => {
@@ -18,7 +21,8 @@ export const useGameInfo = create<GameInfoType>((set) => {
         name: '',
         playerId: 0,
         players: [],
-        initialStart: (code: string, name: string, playerId: number, players: PlayerType[]) => set(() => ({ code, name, playerId, players })),
+        round: 0,
+        initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[]) => set(() => ({ code, name, round, playerId, players })),
         addNewPlayer: (player: PlayerType) => set((state) => {
             const newPlayers = state.players
             newPlayers.push(player)
@@ -30,5 +34,18 @@ export const useGameInfo = create<GameInfoType>((set) => {
                 players,
             }
         }),
+        eliminatePlayer: (playerId: number) => set((state) => {
+            const newPlayers = state.players
+            newPlayers[playerId].eliminated = true
+            return {
+                ...state,
+                players: newPlayers,
+            }
+        }),
+        incrementRound: () => set((state) => {
+            return {
+                round: state.round + 1
+            }
+        })
     }
 })

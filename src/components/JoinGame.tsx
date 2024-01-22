@@ -8,7 +8,7 @@ import { socket } from '@/socket'
 import { useGameInfo } from '@/hooks/useGameInfo'
 import { useToast } from "@/components/ui/use-toast"
 import { useRouter } from 'next/navigation'
-import { responseType, PlayerType, GameType, GameStatus } from '@/types/types'
+import { responseType, PlayerType, GameType, GameStatus, JoinDataResponse } from '@/types/types'
 
 
 const JoinGame: React.FC = () => {
@@ -28,24 +28,31 @@ const JoinGame: React.FC = () => {
 
     useEffect(() => {
         socket.on("create_game_response", (response: responseType<{ code: string, name: string, players: PlayerType[] }>) => {
-            setGameInfo(response.data.code, response.data.name, 0, response.data.players)
+            setGameInfo(response.data.code, response.data.name, 1, 0, response.data.players)
             router.push('/waiting')
         })
 
-        socket.on("join_game_response", (response: responseType<{ code: string, name: string, playerId: number, players: PlayerType[], gameStatus: GameStatus }>) => {
+        socket.on("join_game_response", (response: responseType<JoinDataResponse>) => {
             if (response.status === 'success') {
-                setGameInfo(response.data.code, response.data.name, response.data.playerId, response.data.players)
-                if (response.data.gameStatus === 'waiting') {
-                    router.push('/waiting')
+                setGameInfo(response.data.game.code, response.data.name, response.data.game.round, response.data.playerId, response.data.game.players)
+                if (response.data.game.gamestatus === 'waiting') {
+                    router.push(`/waiting`)
                 }
-                if (response.data.gameStatus === 'preparing') {
-                    router.push('/preparation')
+                if (response.data.game.gamestatus === 'preparing') {
+                    router.push(`/preparation?ready=${response.data.game.countOfReadyPlayers}`)
                 }
-                if (response.data.gameStatus === 'in game') {
-                    router.push('/game')
+                if (response.data.game.gamestatus === 'in game') {
+                    router.push(`/game`)
                 }
-                if (response.data.gameStatus === 'voting') {
-                    router.push('/voting')
+                if (response.data.game.gamestatus === 'discussion') {
+                    router.push(`/discussion?ready=${response.data.game.countOfReadyPlayers}`)
+                }
+                if (response.data.game.gamestatus === 'voting') {
+                    router.push(`/voting?ready=${response.data.game.countOfReadyPlayers}`)
+                }
+                if (response.data.game.gamestatus === 'second voting') {
+                    const optionsString = JSON.stringify(response.data.game.secondVotingOptions);
+                    router.push(`/voting?second_voting=true&options=${encodeURIComponent(optionsString)}&ready=${response.data.game.countOfReadyPlayers}`)
                 }
             }
             else {
@@ -96,11 +103,20 @@ const JoinGame: React.FC = () => {
             socket.emit("join_game", code, name)
         }
         else {
-            toast({
-                variant: "destructive",
-                title: "Введите имя",
-            })
-            nameInput.current?.focus()
+            if (!code) {
+                toast({
+                    variant: "destructive",
+                    title: "Введите Код",
+                })
+                codeInput.current?.focus()
+            }
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Введите имя",
+                })
+                nameInput.current?.focus()
+            }
         }
     }
 
