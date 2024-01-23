@@ -4,10 +4,9 @@ import { useGameInfo } from '../../hooks/useGameInfo'
 
 import { useToast } from "@/components/ui/use-toast"
 import { socket } from '@/socket'
-import { CardType, PlayerType } from '../../types/types';
+import { CardType } from '../../types/types';
 import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft } from 'lucide-react'
 import CopyCodeBadge from '@/components/CopyCodeBadge'
 import PlayerCard from '@/components/PlayerCard'
 import { ModeToggle } from '@/components/ModeToggle'
@@ -15,21 +14,24 @@ import { GameFlow } from '@/data/data'
 
 const Discussion = () => {
 
-    const { code, name, round, playerId, players, updatePlayers } = useGameInfo((state) => {
+    const { code, round, playerId, players, eliminated, countOfNotEliminatedPlayers, updatePlayers, incrementRound } = useGameInfo((state) => {
         return {
             code: state.code,
-            name: state.name,
             round: state.round,
             playerId: state.playerId,
             players: state.players,
+            eliminated: state.eliminated,
+            countOfNotEliminatedPlayers: state.countOfNotEliminatedPlayers,
             updatePlayers: state.updatePlayers,
+            incrementRound: state.incrementRound,
         }
     })
 
     // Проверку нужно исправить
     if (code === '') redirect('/')
 
-    const currentRoundKickCount = GameFlow.get(players.length.toString())?.[round]
+    const gameRounds = GameFlow.get(players.length.toString())
+    const currentRoundKickCount = gameRounds !== undefined ? gameRounds[round - 1] : 0
 
     const searchParams = useSearchParams()
     const readyInit = Number(searchParams.get("ready"))
@@ -49,43 +51,46 @@ const Discussion = () => {
             router.push('/voting')
         })
 
+        socket.on("start_next_round", () => {
+            incrementRound()
+            router.push('/game')
+        })
+
         return () => {
             socket.off("ready_to_vote_response")
             socket.off("start_voting")
+            socket.off("start_next_round")
         }
     }, [])
 
-    const votingReadyHandler = () => {
+    const readyHandler = () => {
         setReady(true)
-        socket.emit('ready_to_vote', { code, playerId })
+        socket.emit("ready_discussion", { code, playerId })
     }
 
     return (
         <div className='flex flex-col gap-2 justify-center items-center px-10 py-4'>
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
-                <Button onClick={() => { router.push('/') }}>
-                    <ChevronLeft />
-                    На Главную
-                </Button>
                 <p>{`Раунд ${round}`}</p>
                 <p>{`Ваш ID: ${playerId}`}</p>
                 <CopyCodeBadge code={code} />
             </div>
             <div className='flex flex-col gap-4'>
                 <p className='text-center text-xl'>Время для общего обсуждения. Не забывайте о том, что у вас есть Карты Действия!</p>
-                <p className='text-center text-xl'>{`В предстоящем голосовании Вам нужно избавиться от ${currentRoundKickCount} ${currentRoundKickCount === 1 ? 'Игрока' : 'Игроков'}`}</p>
+                {!!currentRoundKickCount && <p className='text-center text-xl'>{`В предстоящем голосовании Вам нужно избавиться от ${currentRoundKickCount} ${currentRoundKickCount === 1 ? 'Игрока' : 'Игроков'}`}</p>}
                 <div className='flex flex-wrap gap-2 justify-center'>
                     {players.map((player, index) => {
-                        const cardType: CardType = player.id === playerId ? 'player game card' : 'opponent game card'
+                        let cardType: CardType = player.id === playerId ? 'player game card' : 'opponent game card'
+                        if (player.eliminated) { cardType = 'eliminated card' }
                         return (
                             <PlayerCard key={`player${index}`} nameInput={null} player={player} cardType={cardType} />
                         )
                     })}
                 </div>
             </div>
-            <p>{`Готовы ${readyPlayers}/${players.length}`}</p>
-            <Button disabled={ready} onClick={votingReadyHandler}>{currentRoundKickCount ? 'Готов к голосованию' : 'Готов к следующему раунду'}</Button>
+            <p>{`Готовы ${readyPlayers}/${countOfNotEliminatedPlayers}`}</p>
+            <Button disabled={ready || eliminated} onClick={readyHandler}>{currentRoundKickCount ? 'Готов к голосованию' : 'Готов к следующему раунду'}</Button>
         </div>
     )
 }

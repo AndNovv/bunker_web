@@ -6,9 +6,11 @@ export const maxPLayers = 16
 // type RoundsData = number[]
 
 const RoundsData = {
-    2: [0, 1, 1, 0, 0, 0, 0],
-    4: [0, 1, 1, 0, 0, 0, 0],
-    6: [0, 0, 0, 0, 1, 1, 1],
+    2: [0, 0, 0, 0, 0, 0, 1],
+    3: [0, 0, 0, 0, 0, 0, 1],
+    4: [0, 0, 0, 1, 0, 0, 1],
+    5: [0, 0, 0, 1, 0, 0, 1],
+    6: [0, 0, 0, 1, 0, 1, 1],
     7: [0, 0, 0, 1, 1, 1, 1],
     8: [0, 0, 0, 1, 1, 1, 1],
     9: [0, 0, 1, 1, 1, 1, 1],
@@ -20,5 +22,7 @@ const RoundsData = {
     15: [0, 1, 1, 1, 1, 2, 2],
     16: [0, 1, 1, 1, 1, 2, 2],
 }
+
+export const numberOfRounds = 7
 
 export const GameFlow = new Map(Object.entries(RoundsData))

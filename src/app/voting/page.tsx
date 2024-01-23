@@ -19,15 +19,18 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { ModeToggle } from '@/components/ModeToggle'
+import { useToast } from '@/components/ui/use-toast';
 
 
 const Voting = () => {
 
-    const { code, playerId, players, eliminatePlayer, incrementRound } = useGameInfo((state) => {
+    const { code, playerId, players, eliminated, countOfNotEliminatedPlayers, eliminatePlayer, incrementRound } = useGameInfo((state) => {
         return {
             code: state.code,
             playerId: state.playerId,
             players: state.players,
+            eliminated: state.eliminated,
+            countOfNotEliminatedPlayers: state.countOfNotEliminatedPlayers,
             eliminatePlayer: state.eliminatePlayer,
             incrementRound: state.incrementRound,
         }
@@ -37,6 +40,7 @@ const Voting = () => {
     if (code === '') redirect('/')
 
     const router = useRouter()
+    const { toast } = useToast()
 
     const searchParams = useSearchParams()
     const secondVoting = searchParams.get("second_voting") === 'true' ? true : false
@@ -67,12 +71,12 @@ const Voting = () => {
             router.push(`/votingresults?results=${encodeURIComponent(votingString)}&eliminated=${players[eliminatedPlayerId].name}`)
         })
 
-        socket.on("second_voting", (votingResults: VotingResultsType) => {
+        socket.on("second_voting", (votingResults: number[]) => {
             setVote(-1)
             setReadyCount(0)
             setVoted(false)
             setSecondVote(true)
-            setSecondVotingOptions(votingResults.map((el) => el.playerId))
+            setSecondVotingOptions(votingResults)
         })
 
         return () => {
@@ -83,19 +87,22 @@ const Voting = () => {
     }, [])
 
     const voteHandle = () => {
-        setVoted(true)
-        socket.emit('vote', { code, playerId, vote })
+        if (!eliminated) {
+            setVoted(true)
+            socket.emit('vote', { code, playerId, vote })
+        }
+        else {
+            toast({
+                title: 'Вас уже выгнали('
+            })
+        }
     }
 
     return (
         <div className='flex flex-col gap-4 justify-center items-center px-10 py-4'>
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
-                <Button onClick={() => { router.push('/') }}>
-                    <ChevronLeft />
-                    На Главную
-                </Button>
-                <p>{`Проголосовало: ${readyCount}/${players.length}`}</p>
+                <p>{`Проголосовало: ${readyCount}/${countOfNotEliminatedPlayers}`}</p>
                 <p>{`Ваш ID: ${playerId}`}</p>
                 <CopyCodeBadge code={code} />
             </div>
@@ -111,27 +118,35 @@ const Voting = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {!secondVote && players.map((player, index) => (
-                        <TableRow onClick={() => setVote(index)} className={vote === index ? 'bg-accent cursor-pointer hover:bg-accent' : 'cursor-pointer'} key={`playerinfo${index}`}>
-                            <TableCell className="font-medium">{player.characteristics.name.value}</TableCell>
-                            <TableCell>{player.characteristics.age.value}</TableCell>
-                            <TableCell>{player.characteristics.profession.value}</TableCell>
-                            <TableCell>{player.characteristics.health.value}</TableCell>
-                            <TableCell className="text-right">{player.characteristics.phobia.value}</TableCell>
-                        </TableRow>
-                    ))}
-                    {secondVote && secondVotingOptions.map((id, index) => (
-                        <TableRow onClick={() => setVote(id)} className={vote === id ? 'bg-accent cursor-pointer hover:bg-accent' : 'cursor-pointer'} key={`playerinfo${index}`}>
-                            <TableCell className="font-medium">{players[id].characteristics.name.value}</TableCell>
-                            <TableCell>{players[id].characteristics.age.value}</TableCell>
-                            <TableCell>{players[id].characteristics.profession.value}</TableCell>
-                            <TableCell>{players[id].characteristics.health.value}</TableCell>
-                            <TableCell className="text-right">{players[id].characteristics.phobia.value}</TableCell>
-                        </TableRow>
-                    ))}
+                    {!secondVote && players.map((player, index) => {
+                        if (!player.eliminated) {
+                            return (
+                                <TableRow onClick={() => setVote(index)} className={vote === index ? 'bg-accent cursor-pointer hover:bg-accent' : 'cursor-pointer'} key={`playerinfo${index}`}>
+                                    <TableCell className="font-medium">{player.characteristics.name.value}</TableCell>
+                                    <TableCell>{player.characteristics.age.value}</TableCell>
+                                    <TableCell>{player.characteristics.profession.value}</TableCell>
+                                    <TableCell>{player.characteristics.health.value}</TableCell>
+                                    <TableCell className="text-right">{player.characteristics.phobia.value}</TableCell>
+                                </TableRow>
+                            )
+                        }
+                    }
+                    )}
+                    {secondVote && secondVotingOptions.map((id, index) => {
+                        if (!players[id].eliminated) {
+                            return (
+                                <TableRow onClick={() => setVote(id)} className={vote === id ? 'bg-accent cursor-pointer hover:bg-accent' : 'cursor-pointer'} key={`playerinfo${index}`}>
+                                    <TableCell className="font-medium">{players[id].characteristics.name.value}</TableCell>
+                                    <TableCell>{players[id].characteristics.age.value}</TableCell>
+                                    <TableCell>{players[id].characteristics.profession.value}</TableCell>
+                                    <TableCell>{players[id].characteristics.health.value}</TableCell>
+                                    <TableCell className="text-right">{players[id].characteristics.phobia.value}</TableCell>
+                                </TableRow>)
+                        }
+                    })}
                 </TableBody>
             </Table>
-            <Button onClick={voteHandle} disabled={vote === -1 || voted}>Голосовать</Button>
+            <Button onClick={voteHandle} disabled={vote === -1 || voted || eliminated}>Голосовать</Button>
         </div>
     )
 }

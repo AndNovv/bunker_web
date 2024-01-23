@@ -11,6 +11,7 @@ import { ChevronLeft } from 'lucide-react'
 import CopyCodeBadge from '@/components/CopyCodeBadge'
 import PlayerCard from '@/components/PlayerCard'
 import { ModeToggle } from '@/components/ModeToggle'
+import PreparationPlayerCard from '@/components/PreparationPlayerCard'
 
 
 const Preparation = () => {
@@ -74,16 +75,12 @@ const Preparation = () => {
         <div className='flex flex-col gap-2 justify-center items-center px-10 py-4'>
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
-                <Button onClick={() => { router.push('/') }}>
-                    <ChevronLeft />
-                    На Главную
-                </Button>
                 <p>{`Ваш ID: ${playerId}`}</p>
                 <p>{`Готовы к игре: ${readyPlayers}/${players.length}`}</p>
                 <CopyCodeBadge code={code} />
             </div>
             <p className='text-center'>Познакомьтесь со своим персонажем и вашими картами</p>
-            <PlayerCard nameInput={nameInput} player={player} cardType={'preparation card'} />
+            <PreparationPlayerCard nameInput={nameInput} player={player}></PreparationPlayerCard>
             <Button disabled={ready} onClick={readyHandler}>{ready ? 'Вы готовы' : 'Готов'}</Button>
         </div>
     )

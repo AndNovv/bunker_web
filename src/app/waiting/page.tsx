@@ -15,21 +15,20 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
 import { redirect } from 'next/navigation'
-
-import { ChevronLeft } from 'lucide-react';
 import CopyCodeBadge from '@/components/CopyCodeBadge'
 import { ModeToggle } from '@/components/ModeToggle'
 
 
 const Waiting = () => {
 
-    const { code, name, players, playerId, addNewPlayer } = useGameInfo((state) => {
+    const { code, name, players, playerId, addNewPlayer, initialStart } = useGameInfo((state) => {
         return {
             code: state.code,
             name: state.name,
             players: state.players,
             playerId: state.playerId,
             addNewPlayer: state.addNewPlayer,
+            initialStart: state.initialStart,
         }
     })
 
@@ -64,10 +63,6 @@ const Waiting = () => {
         <div className='flex flex-col gap-10 px-10 py-10'>
             <div className='flex justify-between items-center'>
                 <ModeToggle />
-                <Button onClick={() => { router.push('/') }}>
-                    <ChevronLeft />
-                    На Главную
-                </Button>
                 <p>{`Ваш ID: ${playerId}`}</p>
                 <CopyCodeBadge code={code} />
             </div>

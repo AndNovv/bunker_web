@@ -12,34 +12,29 @@ import { Input } from './ui/input'
 import { cn } from '@/lib/utils'
 
 
-const PlayerCard = React.memo(function PlayerCard({ player, cardType, nameInput }: { player: PlayerType, cardType: CardType, nameInput: React.Ref<HTMLInputElement> }) {
+const PreparationPlayerCard = React.memo(function PreparationPlayerCard({ player, nameInput }: { player: PlayerType, nameInput: React.Ref<HTMLInputElement> }) {
 
     type keys = keyof typeof player.characteristics
     const charachteristicNames = Object.keys(player.characteristics) as keys[]
 
-    let cardStyles = ''
-    let descriptionStyles = ''
-    if (cardType === 'eliminated card') {
-        cardStyles = 'text-[#383636cd] bg-[#7274740f]'
-        descriptionStyles = 'text-[#383636cd]'
-    }
-
     return (
-        <Card className={cn("w-[350px]", cardStyles)}>
+        <Card className="w-[350px]">
             <CardHeader>
                 <CardTitle>{player.name}</CardTitle>
-                <CardDescription className={cn(descriptionStyles)}>
+                <CardDescription>
                     <p>{player.host ? 'Хост' : 'Игрок'}</p>
                     <p>{player.eliminated ? 'Изгнан' : 'В игре'}</p>
                 </CardDescription>
             </CardHeader>
             <CardContent>
                 <div className='flex flex-col gap-2'>
-                    {cardType === 'preparation card' && <Input ref={nameInput} placeholder='Введите имя Вашего персонажа'></Input>}
+                    <Input ref={nameInput} placeholder='Введите имя Вашего персонажа'></Input>
                     {charachteristicNames.map((char, index) => {
-                        return (
-                            <Characteristic key={`char${index}`} cardType={cardType} char={player.characteristics[char]} />
-                        )
+                        if (char !== 'name') {
+                            return (
+                                <Characteristic key={`char${index}`} cardType={'preparation card'} char={player.characteristics[char]} />
+                            )
+                        }
                     })}
                 </div>
             </CardContent>
@@ -47,4 +42,4 @@ const PlayerCard = React.memo(function PlayerCard({ player, cardType, nameInput 
     )
 })
 
-export default PlayerCard
+export default PreparationPlayerCard

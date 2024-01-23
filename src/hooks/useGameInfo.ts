@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import { PlayerCharachteristicsType, PlayerType } from '../types/types'
+import { PlayerType } from '../types/types'
 
 type GameInfoType = {
     code: string,
@@ -8,7 +8,9 @@ type GameInfoType = {
     playerId: number,
     players: PlayerType[],
     round: number,
-    initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[]) => void,
+    eliminated: boolean,
+    countOfNotEliminatedPlayers: number,
+    initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[], eliminated: boolean, countOfNotEliminatedPlayers: number) => void,
     addNewPlayer: (player: PlayerType) => void,
     updatePlayers: (players: PlayerType[]) => void,
     eliminatePlayer: (playerId: number) => void,
@@ -22,11 +24,17 @@ export const useGameInfo = create<GameInfoType>((set) => {
         playerId: 0,
         players: [],
         round: 0,
-        initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[]) => set(() => ({ code, name, round, playerId, players })),
+        eliminated: false,
+        countOfNotEliminatedPlayers: 0,
+        initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[], eliminated: boolean, countOfNotEliminatedPlayers: number) => set(() => ({ code, name, round, playerId, players, eliminated, countOfNotEliminatedPlayers })),
         addNewPlayer: (player: PlayerType) => set((state) => {
             const newPlayers = state.players
             newPlayers.push(player)
-            return { players: newPlayers }
+            return {
+                ...state,
+                countOfNotEliminatedPlayers: state.countOfNotEliminatedPlayers + 1,
+                players: newPlayers
+            }
         }),
         updatePlayers: (players: PlayerType[]) => set((state) => {
             return {
@@ -39,11 +47,14 @@ export const useGameInfo = create<GameInfoType>((set) => {
             newPlayers[playerId].eliminated = true
             return {
                 ...state,
+                eliminated: playerId === state.playerId,
+                countOfNotEliminatedPlayers: state.countOfNotEliminatedPlayers - 1,
                 players: newPlayers,
             }
         }),
         incrementRound: () => set((state) => {
             return {
+                ...state,
                 round: state.round + 1
             }
         })

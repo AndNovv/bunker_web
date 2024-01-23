@@ -11,7 +11,7 @@ export type JoinDataResponse = {
     game: GameType,
 }
 
-export type GameStatus = 'waiting' | 'preparing' | 'in game' | 'discussion' | 'voting' | 'second voting' | 'results'
+export type GameStatus = 'waiting' | 'preparing' | 'revealing' | 'discussion' | 'voting' | 'second voting' | 'results'
 
 export type GameType = {
     gamestatus: GameStatus,
@@ -20,6 +20,8 @@ export type GameType = {
     countOfReadyPlayers: number,
     players: PlayerType[],
     secondVotingOptions: number[],
+    roundsFlow: number[],
+    countOfNotEliminatedPlayers: number,
 }
 
 export type PlayerType = {
@@ -56,4 +58,4 @@ export type VotingResultsType = {
     votes: number,
 }[]
 
-export type CardType = 'preparation card' | 'player game card' | 'opponent game card'
+export type CardType = 'preparation card' | 'player game card' | 'opponent game card' | 'eliminated card'
