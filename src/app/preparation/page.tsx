@@ -7,12 +7,10 @@ import { socket } from '@/socket'
 import { PlayerType } from '../../types/types';
 import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft } from 'lucide-react'
 import CopyCodeBadge from '@/components/CopyCodeBadge'
-import PlayerCard from '@/components/PlayerCard'
 import { ModeToggle } from '@/components/ModeToggle'
 import PreparationPlayerCard from '@/components/PreparationPlayerCard'
-import ActionCard from '@/components/ActionCard'
+import ActionCardPreview from '@/components/ActionCardPreview'
 
 
 const Preparation = () => {
@@ -73,20 +71,21 @@ const Preparation = () => {
     }
 
     return (
-        <div className='flex flex-col gap-2 justify-center items-center px-10 py-4'>
+        <div className='flex flex-col gap-6 justify-center items-center px-10 py-4'>
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
-                <p>{`Ваш ID: ${playerId}`}</p>
                 <p>{`Готовы к игре: ${readyPlayers}/${players.length}`}</p>
                 <CopyCodeBadge code={code} />
             </div>
-            <p className='text-center'>Познакомьтесь со своим персонажем и вашими картами</p>
             <PreparationPlayerCard nameInput={nameInput} player={player}></PreparationPlayerCard>
-            <div className='mt-4'>
+            <div>
                 <h1 className='text-2xl text-center'>Ваши карточки действий</h1>
                 <div className='flex gap-4 mt-2'>
-                    <ActionCard actionData={players[playerId].actionCard1} />
-                    <ActionCard actionData={players[playerId].actionCard2} />
+                    {players[playerId].actionCards.map((actionCard, index) => {
+                        return (
+                            <ActionCardPreview key={`actionCard${index}`} actionData={actionCard} />
+                        )
+                    })}
                 </div>
             </div>
             <Button disabled={ready} onClick={readyHandler}>{ready ? 'Вы готовы' : 'Готов'}</Button>

@@ -103,7 +103,6 @@ const Voting = () => {
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
                 <p>{`Проголосовало: ${readyCount}/${countOfNotEliminatedPlayers}`}</p>
-                <p>{`Ваш ID: ${playerId}`}</p>
                 <CopyCodeBadge code={code} />
             </div>
             {secondVote && <h2 className='text-center text-xl'>{`Голоса разделились между ${secondVotingOptions.length} игроками. Попробуйте обсудить ваше решение еще раз, если вы снова не сможете договориться, игру покинет случайный кандидат!`}</h2>}

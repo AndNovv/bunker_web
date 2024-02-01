@@ -60,18 +60,17 @@ const Game = () => {
 
 
     return (
-        <div className='flex flex-col gap-2 justify-center items-center px-10 py-4'>
+        <div className='flex flex-col gap-6 justify-center items-center px-10 py-4'>
             <NewRoundAlert round={round} />
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
-                <p>{`Раунд ${round}`}</p>
-                <p>{`Ваш ID: ${playerId}`}</p>
+                <h2 className='lg:text-2xl text-lg'>{`Раунд ${round}`}</h2>
                 <CopyCodeBadge code={code} />
             </div>
             <div className='flex flex-col gap-4'>
-                <h2 className='text-center text-xl'>Каждый игрок должен по очереди раскрыть одну свою характеристику</h2>
-                {shouldReveal && !eliminated && <h2 className='text-center text-xl'>Раскройте еще одну характеристику о себе</h2>}
-                <div className='flex flex-wrap gap-2 justify-center'>
+                {/* <h2 className='text-center text-xl'>Каждый игрок должен по очереди раскрыть одну свою характеристику</h2>
+                {shouldReveal && !eliminated && <h2 className='text-center text-xl'>Раскройте еще одну характеристику о себе</h2>} */}
+                <div className='flex flex-wrap gap-4 justify-center'>
                     {players.map((player, index) => {
                         let cardType: CardType = player.id === playerId ? 'player game card' : 'opponent game card'
                         if (player.eliminated) { cardType = 'eliminated card' }

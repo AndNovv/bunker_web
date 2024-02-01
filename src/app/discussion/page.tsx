@@ -4,7 +4,7 @@ import { useGameInfo } from '../../hooks/useGameInfo'
 
 import { useToast } from "@/components/ui/use-toast"
 import { socket } from '@/socket'
-import { CardType } from '../../types/types';
+import { ActionCardType, ActionTypes, CardType, PlayerType } from '../../types/types';
 import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import CopyCodeBadge from '@/components/CopyCodeBadge'
@@ -43,6 +43,8 @@ const Discussion = () => {
     const router = useRouter()
     const { toast } = useToast()
 
+    // Sockets
+
     useEffect(() => {
         socket.on("ready_to_vote_response", (countOfReadyPlayers: number) => {
             setReadyPlayers(countOfReadyPlayers)
@@ -57,12 +59,23 @@ const Discussion = () => {
             router.push('/game')
         })
 
+        socket.on("action_card_was_used", ({ playerId, actionCard, players }: { playerId: number, actionCard: ActionCardType, players: PlayerType[] }) => {
+            updatePlayers(players)
+            toast({
+                title: `Игрок ${players[playerId].name} использовал карту "${actionCard.name}"`
+            })
+        })
+
         return () => {
+            socket.off("action_card_was_used")
             socket.off("ready_to_vote_response")
             socket.off("start_voting")
             socket.off("start_next_round")
         }
     }, [])
+
+
+    // Handlers
 
     const readyHandler = () => {
         setReady(true)
@@ -74,7 +87,6 @@ const Discussion = () => {
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
                 <p>{`Раунд ${round}`}</p>
-                <p>{`Ваш ID: ${playerId}`}</p>
                 <CopyCodeBadge code={code} />
             </div>
             <div className='flex flex-col gap-4'>
@@ -93,8 +105,12 @@ const Discussion = () => {
             <div className='mt-4'>
                 <h1 className='text-2xl text-center'>Ваши карточки действий</h1>
                 <div className='flex gap-4 mt-2'>
-                    <ActionCard actionData={players[playerId].actionCard1} />
-                    <ActionCard actionData={players[playerId].actionCard2} />
+                    {players[playerId].actionCards.map((actionCard, index) => {
+                        return (
+                            <ActionCard ready={ready} key={`actionCard${index}`} actionCardId={index} actionData={actionCard} />
+                        )
+                    })
+                    }
                 </div>
             </div>
             <p>{`Готовы ${readyPlayers}/${countOfNotEliminatedPlayers}`}</p>

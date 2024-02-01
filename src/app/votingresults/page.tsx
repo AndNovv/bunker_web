@@ -57,10 +57,6 @@ const VotingResults = () => {
         <div className='flex flex-col gap-4 justify-center items-center px-10 py-4'>
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
-                <Button onClick={() => { router.push('/') }}>
-                    <ChevronLeft />
-                    На Главную
-                </Button>
                 <CopyCodeBadge code={code} />
             </div>
             <div className='flex flex-col gap-4 w-full'>

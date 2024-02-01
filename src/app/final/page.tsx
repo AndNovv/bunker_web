@@ -45,16 +45,14 @@ const Final = () => {
     }, [])
 
     return (
-        <div className='flex flex-col gap-2 justify-center items-center px-10 py-4'>
+        <div className='flex flex-col gap-6 justify-center items-center px-10 py-4'>
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
-                <p>{`Финал`}</p>
-                <p>{`Ваш ID: ${playerId}`}</p>
+                <h2 className='lg:text-2xl text-lg'>{`Финал`}</h2>
                 <CopyCodeBadge code={code} />
             </div>
             <div className='flex flex-col gap-4'>
-                <p className='text-center text-xl'>Время для подведения результатов</p>
-                <div className='flex flex-wrap gap-2 justify-center'>
+                <div className='flex flex-wrap gap-4 justify-center'>
                     {players.map((player, index) => {
                         let cardType: CardType = player.id === playerId ? 'player game card' : 'opponent game card'
                         if (player.eliminated) { cardType = 'eliminated card' }

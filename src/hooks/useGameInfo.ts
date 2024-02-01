@@ -11,8 +11,6 @@ type GameInfoType = {
     eliminated: boolean,
     countOfNotEliminatedPlayers: number,
     roundsFlow: number[],
-    actionCard1: ActionCardType,
-    actionCard2: ActionCardType,
     initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[], eliminated: boolean, countOfNotEliminatedPlayers: number, roundsFlow: number[]) => void,
     addNewPlayer: (player: PlayerType) => void,
     updatePlayers: (players: PlayerType[]) => void,
@@ -31,8 +29,6 @@ export const useGameInfo = create<GameInfoType>((set) => {
         eliminated: false,
         countOfNotEliminatedPlayers: 0,
         roundsFlow: [],
-        actionCard1: { key: '', char: 'health', name: '', used: false },
-        actionCard2: { key: '', char: 'health', name: '', used: false },
         initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[], eliminated: boolean, countOfNotEliminatedPlayers: number, roundsFlow: number[]) => set(() => ({ code, name, round, playerId, players, eliminated, countOfNotEliminatedPlayers, roundsFlow })),
         addNewPlayer: (player: PlayerType) => set((state) => {
             const newPlayers = state.players

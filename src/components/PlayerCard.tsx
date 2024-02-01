@@ -20,8 +20,8 @@ const PlayerCard = React.memo(function PlayerCard({ player, cardType, nameInput 
     let cardStyles = ''
     let descriptionStyles = ''
     if (cardType === 'eliminated card') {
-        cardStyles = 'text-[#383636cd] bg-[#7274740f]'
-        descriptionStyles = 'text-[#383636cd]'
+        cardStyles = cn('text-[#383636cd]', 'bg-[#7274740f]')
+        descriptionStyles = cn('text-[#383636cd]')
     }
 
     return (

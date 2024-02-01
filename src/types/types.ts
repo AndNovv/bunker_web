@@ -31,16 +31,18 @@ export type PlayerType = {
     ready: boolean,
     votes: number,
     characteristics: PlayerCharachteristicsType,
-    actionCard1: ActionCardType,
-    actionCard2: ActionCardType,
+    actionCards: ActionCardType[],
     revealedCount: number,
     eliminated: boolean,
 }
 
 export type charKeys = keyof PlayerCharachteristicsType
 
+export type ActionTypes = 'pick' | 'no pick' | 'pick except yourself'
+
 export type ActionCardType = {
     key: string,
+    type: ActionTypes,
     char: charKeys,
     name: string,
     used: boolean,
@@ -70,3 +72,7 @@ export type VotingResultsType = {
 }[]
 
 export type CardType = 'preparation card' | 'player game card' | 'opponent game card' | 'eliminated card'
+
+export type useActionCardDataType = {
+    pickedPlayerId: number | null
+}

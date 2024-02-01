@@ -65,7 +65,6 @@ const Waiting = () => {
         <div className='flex flex-col gap-10 px-10 py-10'>
             <div className='flex justify-between items-center'>
                 <ModeToggle />
-                <p>{`Ваш ID: ${playerId}`}</p>
                 <CopyCodeBadge code={code} />
             </div>
             <div className='flex gap-5 flex-wrap justify-center'>
