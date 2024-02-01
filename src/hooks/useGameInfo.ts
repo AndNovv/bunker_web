@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import { PlayerType } from '../types/types'
+import { ActionCardType, PlayerType } from '../types/types'
 
 type GameInfoType = {
     code: string,
@@ -10,11 +10,15 @@ type GameInfoType = {
     round: number,
     eliminated: boolean,
     countOfNotEliminatedPlayers: number,
-    initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[], eliminated: boolean, countOfNotEliminatedPlayers: number) => void,
+    roundsFlow: number[],
+    actionCard1: ActionCardType,
+    actionCard2: ActionCardType,
+    initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[], eliminated: boolean, countOfNotEliminatedPlayers: number, roundsFlow: number[]) => void,
     addNewPlayer: (player: PlayerType) => void,
     updatePlayers: (players: PlayerType[]) => void,
     eliminatePlayer: (playerId: number) => void,
     incrementRound: () => void,
+    updateRoundsFlow: (roundsFlow: number[]) => void,
 }
 
 export const useGameInfo = create<GameInfoType>((set) => {
@@ -26,7 +30,10 @@ export const useGameInfo = create<GameInfoType>((set) => {
         round: 0,
         eliminated: false,
         countOfNotEliminatedPlayers: 0,
-        initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[], eliminated: boolean, countOfNotEliminatedPlayers: number) => set(() => ({ code, name, round, playerId, players, eliminated, countOfNotEliminatedPlayers })),
+        roundsFlow: [],
+        actionCard1: { key: '', char: 'health', name: '', used: false },
+        actionCard2: { key: '', char: 'health', name: '', used: false },
+        initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[], eliminated: boolean, countOfNotEliminatedPlayers: number, roundsFlow: number[]) => set(() => ({ code, name, round, playerId, players, eliminated, countOfNotEliminatedPlayers, roundsFlow })),
         addNewPlayer: (player: PlayerType) => set((state) => {
             const newPlayers = state.players
             newPlayers.push(player)
@@ -56,6 +63,12 @@ export const useGameInfo = create<GameInfoType>((set) => {
             return {
                 ...state,
                 round: state.round + 1
+            }
+        }),
+        updateRoundsFlow: (roundsFlow: number[]) => set((state) => {
+            return {
+                ...state,
+                roundsFlow
             }
         })
     }

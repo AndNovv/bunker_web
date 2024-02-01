@@ -21,7 +21,7 @@ import { ModeToggle } from '@/components/ModeToggle'
 
 const Waiting = () => {
 
-    const { code, name, players, playerId, addNewPlayer, initialStart } = useGameInfo((state) => {
+    const { code, name, players, playerId, addNewPlayer, initialStart, updateRoundsFlow } = useGameInfo((state) => {
         return {
             code: state.code,
             name: state.name,
@@ -29,6 +29,7 @@ const Waiting = () => {
             playerId: state.playerId,
             addNewPlayer: state.addNewPlayer,
             initialStart: state.initialStart,
+            updateRoundsFlow: state.updateRoundsFlow,
         }
     })
 
@@ -45,6 +46,7 @@ const Waiting = () => {
         socket.on("player_connected", (player: PlayerType) => addNewPlayer(player))
 
         socket.on("start_game_response", (game: GameType) => {
+            updateRoundsFlow(game.roundsFlow)
             router.push('/preparation')
         })
 

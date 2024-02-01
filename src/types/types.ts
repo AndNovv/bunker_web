@@ -31,8 +31,19 @@ export type PlayerType = {
     ready: boolean,
     votes: number,
     characteristics: PlayerCharachteristicsType,
+    actionCard1: ActionCardType,
+    actionCard2: ActionCardType,
     revealedCount: number,
     eliminated: boolean,
+}
+
+export type charKeys = keyof PlayerCharachteristicsType
+
+export type ActionCardType = {
+    key: string,
+    char: charKeys,
+    name: string,
+    used: boolean,
 }
 
 export type PlayerCharachteristicsType = {

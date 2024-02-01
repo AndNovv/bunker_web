@@ -28,7 +28,7 @@ const VotingResults = () => {
     useEffect(() => {
         const timeout = setTimeout(() => {
             if (round > numberOfRounds) {
-                router.push('final')
+                router.push('/final')
             }
             else {
                 router.push('/game')

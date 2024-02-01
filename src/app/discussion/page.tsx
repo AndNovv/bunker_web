@@ -11,6 +11,7 @@ import CopyCodeBadge from '@/components/CopyCodeBadge'
 import PlayerCard from '@/components/PlayerCard'
 import { ModeToggle } from '@/components/ModeToggle'
 import { GameFlow } from '@/data/data'
+import ActionCard from '@/components/ActionCard'
 
 const Discussion = () => {
 
@@ -87,6 +88,13 @@ const Discussion = () => {
                             <PlayerCard key={`player${index}`} nameInput={null} player={player} cardType={cardType} />
                         )
                     })}
+                </div>
+            </div>
+            <div className='mt-4'>
+                <h1 className='text-2xl text-center'>Ваши карточки действий</h1>
+                <div className='flex gap-4 mt-2'>
+                    <ActionCard actionData={players[playerId].actionCard1} />
+                    <ActionCard actionData={players[playerId].actionCard2} />
                 </div>
             </div>
             <p>{`Готовы ${readyPlayers}/${countOfNotEliminatedPlayers}`}</p>

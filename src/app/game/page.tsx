@@ -1,27 +1,27 @@
 "use client"
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useGameInfo } from '../../hooks/useGameInfo'
 
 import { socket } from '@/socket'
 import { CardType, PlayerType } from '../../types/types';
 import { redirect, useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { ChevronLeft } from 'lucide-react'
 import CopyCodeBadge from '@/components/CopyCodeBadge'
 import PlayerCard from '@/components/PlayerCard'
 import { ModeToggle } from '@/components/ModeToggle'
-import { numberOfRounds } from '@/data/data';
+import NewRoundAlert from '@/components/NewRoundAlert';
 
 const Game = () => {
 
-    const { code, round, playerId, players, eliminated, updatePlayers } = useGameInfo((state) => {
+    const { code, round, playerId, players, eliminated, roundsFlow, updatePlayers, incrementRound } = useGameInfo((state) => {
         return {
             code: state.code,
             round: state.round,
             playerId: state.playerId,
             players: state.players,
             eliminated: state.eliminated,
+            roundsFlow: state.roundsFlow,
             updatePlayers: state.updatePlayers,
+            incrementRound: state.incrementRound,
         }
     })
 
@@ -34,23 +34,34 @@ const Game = () => {
 
     const router = useRouter()
 
+    const goToTheNextStage = () => {
+        if (roundsFlow[round - 1]) {
+            router.push('/discussion')
+        }
+        else {
+            incrementRound()
+        }
+    }
+
     useEffect(() => {
         socket.on("char_revealed_response", (players: PlayerType[]) => {
             updatePlayers(players)
         })
         socket.on("end_of_round_revealing", (players: PlayerType[]) => {
             updatePlayers(players)
-            router.push('/discussion')
+            goToTheNextStage()
         })
 
         return () => {
             socket.off("char_revealed_response")
             socket.off("end_of_round_revealing")
         }
-    }, [])
+    }, [round])
+
 
     return (
         <div className='flex flex-col gap-2 justify-center items-center px-10 py-4'>
+            <NewRoundAlert round={round} />
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
                 <p>{`Раунд ${round}`}</p>

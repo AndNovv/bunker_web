@@ -12,6 +12,7 @@ import CopyCodeBadge from '@/components/CopyCodeBadge'
 import PlayerCard from '@/components/PlayerCard'
 import { ModeToggle } from '@/components/ModeToggle'
 import PreparationPlayerCard from '@/components/PreparationPlayerCard'
+import ActionCard from '@/components/ActionCard'
 
 
 const Preparation = () => {
@@ -81,6 +82,13 @@ const Preparation = () => {
             </div>
             <p className='text-center'>Познакомьтесь со своим персонажем и вашими картами</p>
             <PreparationPlayerCard nameInput={nameInput} player={player}></PreparationPlayerCard>
+            <div className='mt-4'>
+                <h1 className='text-2xl text-center'>Ваши карточки действий</h1>
+                <div className='flex gap-4 mt-2'>
+                    <ActionCard actionData={players[playerId].actionCard1} />
+                    <ActionCard actionData={players[playerId].actionCard2} />
+                </div>
+            </div>
             <Button disabled={ready} onClick={readyHandler}>{ready ? 'Вы готовы' : 'Готов'}</Button>
         </div>
     )

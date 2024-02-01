@@ -28,33 +28,41 @@ const JoinGame: React.FC = () => {
 
     useEffect(() => {
         socket.on("create_game_response", (response: responseType<{ code: string, name: string, players: PlayerType[] }>) => {
-            setGameInfo(response.data.code, response.data.name, 1, 0, response.data.players, false, 1)
+            setGameInfo(response.data.code, response.data.name, 1, 0, response.data.players, false, 1, [])
             router.push('/waiting')
         })
 
         socket.on("join_game_response", (response: responseType<JoinDataResponse>) => {
             if (response.status === 'success') {
-                setGameInfo(response.data.game.code, response.data.name, response.data.game.round, response.data.playerId, response.data.game.players, response.data.game.players[response.data.playerId].eliminated, response.data.game.countOfNotEliminatedPlayers)
+                setGameInfo(response.data.game.code,
+                    response.data.name,
+                    response.data.game.round,
+                    response.data.playerId,
+                    response.data.game.players,
+                    response.data.game.players[response.data.playerId].eliminated,
+                    response.data.game.countOfNotEliminatedPlayers,
+                    response.data.game.roundsFlow)
+
                 if (response.data.game.gamestatus === 'waiting') {
                     router.push(`/waiting`)
                 }
-                if (response.data.game.gamestatus === 'preparing') {
+                else if (response.data.game.gamestatus === 'preparing') {
                     router.push(`/preparation?ready=${response.data.game.countOfReadyPlayers}`)
                 }
-                if (response.data.game.gamestatus === 'revealing') {
+                else if (response.data.game.gamestatus === 'revealing') {
                     router.push(`/game`)
                 }
-                if (response.data.game.gamestatus === 'discussion') {
+                else if (response.data.game.gamestatus === 'discussion') {
                     router.push(`/discussion?ready=${response.data.game.countOfReadyPlayers}`)
                 }
-                if (response.data.game.gamestatus === 'voting') {
+                else if (response.data.game.gamestatus === 'voting') {
                     router.push(`/voting?ready=${response.data.game.countOfReadyPlayers}`)
                 }
-                if (response.data.game.gamestatus === 'second voting') {
+                else if (response.data.game.gamestatus === 'second voting') {
                     const optionsString = JSON.stringify(response.data.game.secondVotingOptions);
                     router.push(`/voting?second_voting=true&options=${encodeURIComponent(optionsString)}&ready=${response.data.game.countOfReadyPlayers}`)
                 }
-                if (response.data.game.gamestatus === 'results') {
+                else if (response.data.game.gamestatus === 'results') {
                     router.push(`/final`)
                 }
             }
