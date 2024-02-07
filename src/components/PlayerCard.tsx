@@ -6,7 +6,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { CardType, PlayerType } from '@/types/types'
+import { CardType, Charachteristic, PlayerType } from '@/types/types'
 import Characteristic from './Characteristic'
 import { Input } from './ui/input'
 import { cn } from '@/lib/utils'
@@ -35,10 +35,12 @@ const PlayerCard = React.memo(function PlayerCard({ player, cardType, nameInput 
             </CardHeader>
             <CardContent>
                 <div className='flex flex-col gap-2'>
-                    {cardType === 'preparation card' && <Input ref={nameInput} placeholder='Введите имя Вашего персонажа'></Input>}
                     {charachteristicNames.map((char, index) => {
+                        const playerChar = player.characteristics[char]
+                        const value = (typeof playerChar.value === "string") ? playerChar.value : playerChar.value.name
+                        const charData: Charachteristic<string, string> = { key: playerChar.key, title: playerChar.title, value: value, hidden: playerChar.hidden }
                         return (
-                            <Characteristic key={`char${index}`} cardType={cardType} char={player.characteristics[char]} />
+                            <Characteristic key={`char${index}`} cardType={cardType} char={charData} />
                         )
                     })}
                 </div>

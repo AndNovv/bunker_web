@@ -123,9 +123,9 @@ const Voting = () => {
                                 <TableRow onClick={() => setVote(index)} className={vote === index ? 'bg-accent cursor-pointer hover:bg-accent' : 'cursor-pointer'} key={`playerinfo${index}`}>
                                     <TableCell className="font-medium">{player.characteristics.name.value}</TableCell>
                                     <TableCell>{player.characteristics.age.value}</TableCell>
-                                    <TableCell>{player.characteristics.profession.value}</TableCell>
-                                    <TableCell>{player.characteristics.health.value}</TableCell>
-                                    <TableCell className="text-right">{player.characteristics.phobia.value}</TableCell>
+                                    <TableCell>{player.characteristics.profession.value.name}</TableCell>
+                                    <TableCell>{player.characteristics.health.value.name}</TableCell>
+                                    <TableCell className="text-right">{player.characteristics.interestingFact.value.name}</TableCell>
                                 </TableRow>
                             )
                         }
@@ -137,9 +137,9 @@ const Voting = () => {
                                 <TableRow onClick={() => setVote(id)} className={vote === id ? 'bg-accent cursor-pointer hover:bg-accent' : 'cursor-pointer'} key={`playerinfo${index}`}>
                                     <TableCell className="font-medium">{players[id].characteristics.name.value}</TableCell>
                                     <TableCell>{players[id].characteristics.age.value}</TableCell>
-                                    <TableCell>{players[id].characteristics.profession.value}</TableCell>
-                                    <TableCell>{players[id].characteristics.health.value}</TableCell>
-                                    <TableCell className="text-right">{players[id].characteristics.phobia.value}</TableCell>
+                                    <TableCell>{players[id].characteristics.profession.value.name}</TableCell>
+                                    <TableCell>{players[id].characteristics.health.value.name}</TableCell>
+                                    <TableCell className="text-right">{players[id].characteristics.interestingFact.value.name}</TableCell>
                                 </TableRow>)
                         }
                     })}

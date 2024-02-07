@@ -48,15 +48,73 @@ export type ActionCardType = {
     used: boolean,
 }
 
+// Stats Types
+
+export type PlayerStats = 'Phisics' | 'Intelligence' | 'Tech' | 'Psycho' | 'Social' | 'Med' | 'Food Consumption' | 'Med Consumption'
+
+export type StatEffectType = {
+    stat: PlayerStats,
+    value: number
+}
+
+export type BunkerStats = 'Med' | 'Safety' | 'Anxiety' | 'Food' | 'Food Consumption' | 'Tech' | 'Medicines' | 'Med Consumption'
+
+export type BunkerStatEffectType = {
+    stat: BunkerStats,
+    value: number
+}
+
+export type Bagage = {
+    name: string,
+    effect: BunkerStatEffectType[]
+}
+
+type NamesOfBodyTypes = 'Худой' | 'Среднего телосложения' | 'Крепкий' | 'Атлетическое' | 'Полный' | 'Ожирение'
+
+export type BodeType = {
+    name: NamesOfBodyTypes,
+    effect: StatEffectType[],
+}
+
+export type HealthConditionType = {
+    name: string,                       // Название болезни, заболевания, состояния здоровья
+    lethal: number,                     // Вероятность смерти с этим заболеванием (0 - не опасно, 1 - вероятность смерти очень велика)
+    contagious: number,                 // Вероятность заразить окружающих (0 - нельзя заразить, 1 - заражение крайне вероятно)
+    cureProbability: number,            // Вероятность вылечиться в ближайший месяц (0 - шансов нет, 1 - 100%)
+    effect: StatEffectType[]            // Как болезнь влияет на статистику человека (физическую форму 'Physics', интеллект 'Intelligence', психологическая устойчивость 'Psycho')
+}
+
+export type Hobby = {
+    name: string,
+    effect: StatEffectType[]
+}
+
+export type InterestingFact = {
+    name: string,
+    effect: StatEffectType[]
+}
+
+export type Profession = {
+    name: string,
+    effect: StatEffectType[]
+}
+
+export type Trait = {
+    name: string,
+    effect: StatEffectType[]
+}
+
 export type PlayerCharachteristicsType = {
     name: Charachteristic<'Имя', string>,
     sex: Charachteristic<'Пол', 'Мужчина' | 'Женщина'>,
     age: Charachteristic<'Возраст', string>,
-    profession: Charachteristic<'Профессия', string>,
-    hobby: Charachteristic<'Хобби', string>,
-    phobia: Charachteristic<'Фобия', string>,
-    health: Charachteristic<'Здоровье', string>,
-    interestingFact: Charachteristic<'Факт', string>,
+    bodyType: Charachteristic<'Телосложение', BodeType>,
+    profession: Charachteristic<'Профессия', Profession>,
+    hobby: Charachteristic<'Хобби', Hobby>,
+    health: Charachteristic<'Здоровье', HealthConditionType>,
+    interestingFact: Charachteristic<'Факт', InterestingFact>,
+    bagage: Charachteristic<'Багаж', Bagage>,
+    trait: Charachteristic<'Черта характера', Trait>,
 }
 
 export type Charachteristic<TTitle, Tvalue> = {
