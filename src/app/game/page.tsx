@@ -9,6 +9,8 @@ import CopyCodeBadge from '@/components/CopyCodeBadge'
 import PlayerCard from '@/components/PlayerCard'
 import { ModeToggle } from '@/components/ModeToggle'
 import NewRoundAlert from '@/components/NewRoundAlert';
+import PlayerCardForVoting from '@/components/PlayerCardForVoting';
+import EliminatedPlayerCard from '@/components/EliminatedPlayerCard';
 
 const Game = () => {
 
@@ -58,6 +60,19 @@ const Game = () => {
         }
     }, [round])
 
+    const eliminatedPlayerCards: React.ReactNode[] = []
+    const inGamePlayerCards: React.ReactNode[] = []
+
+    players.map((player, index) => {
+        let cardType: CardType = player.id === playerId ? 'player game card' : 'opponent game card'
+        if (player.eliminated) {
+            eliminatedPlayerCards.push(<EliminatedPlayerCard key={`player${index}`} player={player} />)
+        }
+        else {
+            inGamePlayerCards.push(<PlayerCard key={`player${index}`} player={player} cardType={cardType} />)
+        }
+    })
+
 
     return (
         <div className='flex flex-col gap-6 justify-center items-center px-10 py-4'>
@@ -71,12 +86,11 @@ const Game = () => {
                 {/* <h2 className='text-center text-xl'>Каждый игрок должен по очереди раскрыть одну свою характеристику</h2>
                 {shouldReveal && !eliminated && <h2 className='text-center text-xl'>Раскройте еще одну характеристику о себе</h2>} */}
                 <div className='flex flex-wrap gap-4 justify-center'>
-                    {players.map((player, index) => {
-                        let cardType: CardType = player.id === playerId ? 'player game card' : 'opponent game card'
-                        if (player.eliminated) { cardType = 'eliminated card' }
-                        return (
-                            <PlayerCard key={`player${index}`} nameInput={null} player={player} cardType={cardType} />
-                        )
+                    {inGamePlayerCards.map((el) => {
+                        return (el)
+                    })}
+                    {eliminatedPlayerCards.map((el) => {
+                        return (el)
                     })}
                 </div>
             </div>

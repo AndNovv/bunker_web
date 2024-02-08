@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/table"
 import { ModeToggle } from '@/components/ModeToggle'
 import { useToast } from '@/components/ui/use-toast';
+import PlayerCardForVoting from '@/components/PlayerCardForVoting';
 
 
 const Voting = () => {
@@ -106,45 +107,23 @@ const Voting = () => {
                 <CopyCodeBadge code={code} />
             </div>
             {secondVote && <h2 className='text-center text-xl'>{`Голоса разделились между ${secondVotingOptions.length} игроками. Попробуйте обсудить ваше решение еще раз, если вы снова не сможете договориться, игру покинет случайный кандидат!`}</h2>}
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Имя</TableHead>
-                        <TableHead>Возраст</TableHead>
-                        <TableHead>Профессия</TableHead>
-                        <TableHead>Здоровье</TableHead>
-                        <TableHead className="text-right">Фобия</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {!secondVote && players.map((player, index) => {
-                        if (!player.eliminated) {
-                            return (
-                                <TableRow onClick={() => setVote(index)} className={vote === index ? 'bg-accent cursor-pointer hover:bg-accent' : 'cursor-pointer'} key={`playerinfo${index}`}>
-                                    <TableCell className="font-medium">{player.characteristics.name.value}</TableCell>
-                                    <TableCell>{player.characteristics.age.value}</TableCell>
-                                    <TableCell>{player.characteristics.profession.value.name}</TableCell>
-                                    <TableCell>{player.characteristics.health.value.name}</TableCell>
-                                    <TableCell className="text-right">{player.characteristics.interestingFact.value.name}</TableCell>
-                                </TableRow>
-                            )
-                        }
-                    }
-                    )}
-                    {secondVote && secondVotingOptions.map((id, index) => {
-                        if (!players[id].eliminated) {
-                            return (
-                                <TableRow onClick={() => setVote(id)} className={vote === id ? 'bg-accent cursor-pointer hover:bg-accent' : 'cursor-pointer'} key={`playerinfo${index}`}>
-                                    <TableCell className="font-medium">{players[id].characteristics.name.value}</TableCell>
-                                    <TableCell>{players[id].characteristics.age.value}</TableCell>
-                                    <TableCell>{players[id].characteristics.profession.value.name}</TableCell>
-                                    <TableCell>{players[id].characteristics.health.value.name}</TableCell>
-                                    <TableCell className="text-right">{players[id].characteristics.interestingFact.value.name}</TableCell>
-                                </TableRow>)
-                        }
-                    })}
-                </TableBody>
-            </Table>
+
+            {!secondVote && players.map((player, index) => {
+                if (!player.eliminated) {
+                    return (
+                        <PlayerCardForVoting onClick={() => setVote(player.id)} key={`playerCard${index}`} player={player} selected={vote === player.id} />
+                    )
+                }
+            }
+            )}
+            {secondVote && secondVotingOptions.map((id, index) => {
+                if (!players[id].eliminated) {
+                    return (
+                        <PlayerCardForVoting onClick={() => setVote(id)} key={`playerCard${index}`} player={players[id]} selected={vote === id} />
+                    )
+                }
+            })}
+
             <Button onClick={voteHandle} disabled={vote === -1 || voted || eliminated}>Голосовать</Button>
         </div>
     )

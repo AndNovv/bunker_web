@@ -6,18 +6,22 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { CardType, Charachteristic, PlayerType } from '@/types/types'
+import { Charachteristic, PlayerType } from '@/types/types'
 import Characteristic from './Characteristic'
+import { cn } from '@/lib/utils'
 
 
-const PlayerCard = React.memo(function PlayerCard({ player, cardType }: { player: PlayerType, cardType: CardType }) {
+const PlayerCardForVoting = React.memo(function PlayerCard({ player, selected, onClick }: { player: PlayerType, selected: boolean, onClick: () => void }) {
 
     type keys = keyof typeof player.characteristics
     const charachteristicNames = Object.keys(player.characteristics) as keys[]
 
+    const selectedCardStyles = cn('scale-105 bg-secondary')
+
+    const cardStyles = selected ? cn("w-[350px]", selectedCardStyles) : "w-[350px]"
 
     return (
-        <Card className="w-[350px]">
+        <Card onClick={onClick} className={cardStyles}>
             <CardHeader>
                 <CardTitle>{player.name}</CardTitle>
                 <CardDescription>
@@ -32,7 +36,7 @@ const PlayerCard = React.memo(function PlayerCard({ player, cardType }: { player
                         const value = (typeof playerChar.value === "string") ? playerChar.value : playerChar.value.name
                         const charData: Charachteristic<string, string> = { key: playerChar.key, title: playerChar.title, value: value, hidden: playerChar.hidden }
                         return (
-                            <Characteristic key={`char${index}`} cardType={cardType} char={charData} />
+                            <Characteristic key={`char${index}`} cardType={"opponent game card"} char={charData} />
                         )
                     })}
                 </div>
@@ -41,4 +45,4 @@ const PlayerCard = React.memo(function PlayerCard({ player, cardType }: { player
     )
 })
 
-export default PlayerCard
+export default PlayerCardForVoting

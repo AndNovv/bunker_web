@@ -24,6 +24,24 @@ export type GameType = {
     countOfNotEliminatedPlayers: number,
 }
 
+
+type Stat<TTitle> = {
+    key: PlayerStats,
+    title: TTitle,
+    value: number,
+}
+
+export type PlayerStatsType = {
+    "Phisics": Stat<'Физическая форма'>,
+    "Intelligence": Stat<'Интеллект'>,
+    "Tech": Stat<'Техническая компетентность'>,
+    "Psycho": Stat<'Психологическая устойчивотсь'>,
+    "Social": Stat<'Социальность'>,
+    "Food Consumption": Stat<'Потребление пищи'>,
+    "Med Consumption": Stat<'Потребление медикаментов'>,
+    "Med": Stat<'Навыки медицины'>,
+}
+
 export type PlayerType = {
     id: number,
     name: string,
@@ -34,6 +52,7 @@ export type PlayerType = {
     actionCards: ActionCardType[],
     revealedCount: number,
     eliminated: boolean,
+    playerStats: PlayerStatsType,
 }
 
 export type charKeys = keyof PlayerCharachteristicsType

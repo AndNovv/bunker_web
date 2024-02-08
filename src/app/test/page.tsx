@@ -3,12 +3,9 @@ import React, { useEffect, useState } from 'react'
 import { useGameInfo } from '../../hooks/useGameInfo'
 
 import { socket } from '@/socket'
-import { CardType, PlayerType } from '../../types/types';
-import { redirect, useRouter } from 'next/navigation';
-import CopyCodeBadge from '@/components/CopyCodeBadge'
+import { PlayerStats, PlayerType } from '../../types/types';
 import PlayerCard from '@/components/PlayerCard'
 import { ModeToggle } from '@/components/ModeToggle'
-import NewRoundAlert from '@/components/NewRoundAlert';
 
 const Test = () => {
 
@@ -35,13 +32,21 @@ const Test = () => {
                 <ModeToggle />
             </div>
             <div className='flex flex-col gap-4'>
-                {/* <h2 className='text-center text-xl'>Каждый игрок должен по очереди раскрыть одну свою характеристику</h2>
-                {shouldReveal && !eliminated && <h2 className='text-center text-xl'>Раскройте еще одну характеристику о себе</h2>} */}
                 <div className='flex flex-wrap gap-4 justify-center'>
                     {players.map((player, index) => {
                         return (
-                            <PlayerCard key={`player${index}`} nameInput={null} player={player} cardType={"opponent game card"} />
+                            <PlayerCard key={`player${index}`} player={player} cardType={"opponent game card"} />
                         )
+                    })}
+
+                </div>
+                <div className='flex flex-wrap gap-4 justify-center'>
+                    {players.map((player, index) => {
+                        let result: React.ReactNode[] = []
+                        for (const key in player.playerStats) {
+                            result.push(<div>{`${player.playerStats[key as PlayerStats].title}: ${player.playerStats[key as PlayerStats].value}`}</div>)
+                        }
+                        return <div key={`player${index}`}><h1>{player.name}</h1>{result}</div>
                     })}
                 </div>
             </div>

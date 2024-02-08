@@ -97,7 +97,7 @@ const Discussion = () => {
                         let cardType: CardType = player.id === playerId ? 'player game card' : 'opponent game card'
                         if (player.eliminated) { cardType = 'eliminated card' }
                         return (
-                            <PlayerCard key={`player${index}`} nameInput={null} player={player} cardType={cardType} />
+                            <PlayerCard key={`player${index}`} player={player} cardType={cardType} />
                         )
                     })}
                 </div>
