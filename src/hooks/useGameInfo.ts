@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import { ActionCardType, PlayerType } from '../types/types'
+import { PlayerType } from '../types/types'
 
 type GameInfoType = {
     code: string,

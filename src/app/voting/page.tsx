@@ -6,18 +6,8 @@ import { socket } from '@/socket'
 import { VotingResultsType } from '../../types/types';
 import { redirect, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft } from 'lucide-react'
 import CopyCodeBadge from '@/components/CopyCodeBadge'
 import { useSearchParams } from 'next/navigation'
-
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
 import { ModeToggle } from '@/components/ModeToggle'
 import { useToast } from '@/components/ui/use-toast';
 import PlayerCardForVoting from '@/components/PlayerCardForVoting';

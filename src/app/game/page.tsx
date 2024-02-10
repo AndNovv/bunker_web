@@ -9,18 +9,16 @@ import CopyCodeBadge from '@/components/CopyCodeBadge'
 import PlayerCard from '@/components/PlayerCard'
 import { ModeToggle } from '@/components/ModeToggle'
 import NewRoundAlert from '@/components/NewRoundAlert';
-import PlayerCardForVoting from '@/components/PlayerCardForVoting';
 import EliminatedPlayerCard from '@/components/EliminatedPlayerCard';
 
 const Game = () => {
 
-    const { code, round, playerId, players, eliminated, roundsFlow, updatePlayers, incrementRound } = useGameInfo((state) => {
+    const { code, round, playerId, players, roundsFlow, updatePlayers, incrementRound } = useGameInfo((state) => {
         return {
             code: state.code,
             round: state.round,
             playerId: state.playerId,
             players: state.players,
-            eliminated: state.eliminated,
             roundsFlow: state.roundsFlow,
             updatePlayers: state.updatePlayers,
             incrementRound: state.incrementRound,

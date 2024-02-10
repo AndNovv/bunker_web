@@ -22,8 +22,45 @@ export type GameType = {
     secondVotingOptions: number[],
     roundsFlow: number[],
     countOfNotEliminatedPlayers: number,
+    bunkerStats: BunkerStatsType,
+    bunkerRelatives: BunkerRelatives,
 }
 
+export type BunkerStat<TTitle> = {
+    key: BunkerStats,
+    title: TTitle,
+    value: number,
+}
+
+export type BunkerStatsType = {
+    "Med": BunkerStat<'Навыки медицины'>,
+    "Safety": BunkerStat<'Безопасность'>,
+    "Anxiety": BunkerStat<'Напряженность'>,
+    "Food": BunkerStat<'Запасы еды'>,
+    "Medicines": BunkerStat<'Запасы медикаментов'>,
+    "Food Consumption": BunkerStat<'Потребление пищи'>,
+    "Med Consumption": BunkerStat<'Потребление медикаментов'>,
+    "Tech": BunkerStat<'Техническая компетентность'>,
+    "Vent System": BunkerStat<'Система вентеляции'>,
+    "Water Cleaning System": BunkerStat<'Система очистки воды'>,
+    "Electricity System": BunkerStat<'Система электроснабжения'>,
+}
+
+type RelativeValue = 0 | 1 | 2 | 3 | 4
+
+export type RelativeStat<TTitle> = {
+    title: TTitle
+    key: BunkerStats
+    value: RelativeValue
+    expected: number
+    real: number
+}
+
+export type BunkerRelatives = {
+    "Safety": RelativeStat<"Безопасность">,
+    "Med": RelativeStat<"Медицинские навыки">,
+    "Tech": RelativeStat<"Технические навыки">,
+}
 
 type Stat<TTitle> = {
     key: PlayerStats,
@@ -42,6 +79,15 @@ export type PlayerStatsType = {
     "Med": Stat<'Навыки медицины'>,
 }
 
+export type RelativePlayerStat = {
+    key: PlayerStats
+    value: RelativeValue
+}
+
+export type PlayerRelatives = {
+    "Intelligence": RelativePlayerStat,
+}
+
 export type PlayerType = {
     id: number,
     name: string,
@@ -53,6 +99,7 @@ export type PlayerType = {
     revealedCount: number,
     eliminated: boolean,
     playerStats: PlayerStatsType,
+    relatives: PlayerRelatives,
 }
 
 export type charKeys = keyof PlayerCharachteristicsType
@@ -76,7 +123,7 @@ export type StatEffectType = {
     value: number
 }
 
-export type BunkerStats = 'Med' | 'Safety' | 'Anxiety' | 'Food' | 'Food Consumption' | 'Tech' | 'Medicines' | 'Med Consumption'
+export type BunkerStats = 'Med' | 'Safety' | 'Anxiety' | 'Food' | 'Food Consumption' | 'Tech' | 'Medicines' | 'Med Consumption' | 'Vent System' | 'Water Cleaning System' | 'Electricity System'
 
 export type BunkerStatEffectType = {
     stat: BunkerStats,
@@ -90,7 +137,7 @@ export type Bagage = {
 
 type NamesOfBodyTypes = 'Худой' | 'Среднего телосложения' | 'Крепкий' | 'Атлетическое' | 'Полный' | 'Ожирение'
 
-export type BodeType = {
+export type BodyType = {
     name: NamesOfBodyTypes,
     effect: StatEffectType[],
 }
@@ -127,7 +174,7 @@ export type PlayerCharachteristicsType = {
     name: Charachteristic<'Имя', string>,
     sex: Charachteristic<'Пол', 'Мужчина' | 'Женщина'>,
     age: Charachteristic<'Возраст', string>,
-    bodyType: Charachteristic<'Телосложение', BodeType>,
+    bodyType: Charachteristic<'Телосложение', BodyType>,
     profession: Charachteristic<'Профессия', Profession>,
     hobby: Charachteristic<'Хобби', Hobby>,
     health: Charachteristic<'Здоровье', HealthConditionType>,
@@ -153,3 +200,66 @@ export type CardType = 'preparation card' | 'player game card' | 'opponent game 
 export type useActionCardDataType = {
     pickedPlayerId: number | null
 }
+
+// Events 
+
+export type TypesOfEvent = 'Simple' | 'Complex'
+
+export type SimpleConsequence = {
+    type: 'Simple'
+    title: string,
+    descrition: string,
+    probability: number,
+    effect: EventEffect[]
+}
+
+type PlayerDependency = {
+    type: 'Player'
+    stat: PlayerStats
+}
+type BunkerDependency = {
+    type: 'Bunker'
+    stat: BunkerStats
+}
+
+type probabilityDependence = PlayerDependency | BunkerDependency
+
+export type ComplexConsequence = {
+    type: 'Complex',
+    title: string,
+    descrition: string,
+    probability: [number, number, number, number, number],
+    probabilityDependence: probabilityDependence
+    effect: EventEffect[]
+}
+
+export type Consequence = SimpleConsequence | ComplexConsequence
+
+export type EventResponse = {
+    title: string,
+    consequences: Consequence[]
+}
+
+export type ComplexEvent = {
+    type: 'Complex',
+    title: string,
+    description: string,
+    responses: EventResponse[],
+}
+
+export type SimpleEvent = {
+    type: 'Simple',
+    title: string,
+    description: string,
+    effect: EventEffect[],
+}
+
+export type EventEffect = {
+    stat: BunkerStats,
+    value: number,
+} | {
+    stat: 'Death',
+    playerId: number
+}
+
+export type EventType = SimpleEvent | ComplexEvent

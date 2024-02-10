@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
-import { Inter as FontSans } from 'next/font/google'
 import { ThemeProvider } from "@/components/ThemeProvider"
 import './globals.css'
 import { cn } from '@/lib/utils'
 import { Toaster } from "@/components/ui/toaster"
+import { Inter } from 'next/font/google'
 
-export const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
 })
 
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
+      <body className={cn("min-h-screen bg-background font-sans antialiased", inter.variable)}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
