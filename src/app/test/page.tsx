@@ -1,14 +1,15 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useGameInfo } from '../../hooks/useGameInfo'
 
 import { socket } from '@/socket'
-import { BunkerRelatives, BunkerStatsType, EventType, GameType, PlayerStats, PlayerType } from '../../types/types';
+import { BunkerRelatives, BunkerStatsType, Consequence, EventType, FinaleType, GameType, PlayerStats, PlayerType } from '../../types/types';
 import PlayerCard from '@/components/PlayerCard'
 import { ModeToggle } from '@/components/ModeToggle'
 import BunkerState from '@/components/BunkerState';
 import { Events } from '@/data/data';
 import { useToast } from '@/components/ui/use-toast';
+import FinaleNewRoundInfoAlert from '@/components/FinaleNewRoundInfoAlert';
 
 const Test = () => {
 
@@ -16,15 +17,28 @@ const Test = () => {
     const [bunkerStats, setBunkerStats] = useState<BunkerStatsType>()
     const [bunkerRelatives, setBunkerRelatives] = useState<BunkerRelatives>()
 
+
+    const [finaleInfo, setFinaleInfo] = useState<FinaleType>()
+
+    const round = finaleInfo?.round
+    const turn = finaleInfo?.turn
+    const eventIds = finaleInfo?.eventsIdList
+    const pickedEventId = finaleInfo?.pickedEventId
+    const pickedEvent = typeof pickedEventId === 'number' ? Events[pickedEventId] : null
+
+    const prevRoundStatistics = finaleInfo?.prevRoundStatistics
+
+    const [showRoundInfoAlert, setShowRoundInfoAlert] = useState(false)
+
     const [code, setCode] = useState('')
 
-    const [eventIds, setEventIds] = useState<number[]>([])
-    const [pickedEventId, setPickedEventId] = useState(() => { return -1 })
-
-    const pickedEvent = pickedEventId !== -1 ? Events[pickedEventId] : null
-
-
     const { toast } = useToast()
+
+    useEffect(() => {
+        if (turn === 'Eliminated' && round !== 1) {
+            setShowRoundInfoAlert(true)
+        }
+    }, [turn, round])
 
     useEffect(() => {
         socket.emit("test_game")
@@ -36,27 +50,37 @@ const Test = () => {
             setBunkerStats(game.bunkerStats)
             setCode(game.code)
             setBunkerRelatives(game.bunkerRelatives)
-            socket.emit("get_events_to_pick")
+            setFinaleInfo(game.finale)
+            socket.emit("get_events_to_pick", code)
         })
 
-        socket.on("get_events_to_pick_response", (events: number[]) => {
-            setEventIds(events)
+        socket.on("get_events_to_pick_response", (finaleInfo: FinaleType) => {
+            setFinaleInfo(finaleInfo)
         })
 
-        socket.on("event_picked", (eventId: number) => {
-            setPickedEventId(eventId)
-        })
-
-        socket.on("pick_response_response", ({ consequenceId, responseId, bunkerStats, players }: { consequenceId: number, responseId: number, bunkerStats: BunkerStatsType, players: PlayerType[] }) => {
-            setPlayers(players)
+        socket.on("event_picked", ({ finaleInfo, bunkerStats, message }: { finaleInfo: FinaleType, bunkerStats: BunkerStatsType, message: string }) => {
+            setFinaleInfo(finaleInfo)
             setBunkerStats(bunkerStats)
-            if (pickedEvent && pickedEvent.type === 'Complex') {
+            if (message) {
                 toast({
-                    title: `Выжившие выбрали '${pickedEvent.responses[responseId].title}'`,
-                    description: `В результате '${pickedEvent.responses[responseId].consequences[consequenceId].title}\t${pickedEvent.responses[responseId].consequences[consequenceId].descrition}'`,
-                    variant: 'default'
+                    title: message
                 })
             }
+        })
+
+        socket.on("pick_response_response", ({ finaleInfo, bunkerStats, players }: { finaleInfo: FinaleType, bunkerStats: BunkerStatsType, players: PlayerType[] }) => {
+            setFinaleInfo(finaleInfo)
+            setPlayers(players)
+            setBunkerStats(bunkerStats)
+
+            // const { title, consequenceTitle, consequenceDescription } = finaleInfo.prevRoundStatistics.responseData
+
+            // toast({
+            //     title: `Выжившие выбрали '${title}'`,
+            //     description: `В результате '${consequenceTitle} (${consequenceDescription})'`,
+            //     variant: 'default'
+            // })
+
         })
 
         return () => {
@@ -72,65 +96,65 @@ const Test = () => {
     }
 
     const handleChooseResponseClick = (responseIndex: number) => {
-        socket.emit("pick_response", { code, playerId: 0, pickedEventId, responseIndex })
+        socket.emit("pick_response", { code, playerId: 0, responseIndex })
     }
 
     return (
         <div className='flex flex-col gap-6 justify-center items-center px-10 py-4'>
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
+                {finaleInfo?.round && finaleInfo.maxRounds && (
+                    <>
+                        <h2>{`Текущий месяц: ${finaleInfo?.round}`}</h2>
+                        <h2>{`Осталось прожить: ${finaleInfo?.maxRounds - finaleInfo?.round}`}</h2>
+                    </>
+                )}
             </div>
             <div className='flex flex-col gap-4 justify-center items-center'>
-                <div className='flex flex-wrap gap-4 justify-center'>
-                    {players.map((player, index) => {
-                        return (
-                            <PlayerCard key={`player${index}`} player={player} cardType={"opponent game card"} />
-                        )
-                    })}
 
-                </div>
-                <div className='flex flex-wrap gap-4 justify-center'>
-                    {players.map((player, index) => {
-                        let result: React.ReactNode[] = []
-                        for (const key in player.playerStats) {
-                            result.push(<div>{`${player.playerStats[key as PlayerStats].title}: ${player.playerStats[key as PlayerStats].value}`}</div>)
-                        }
-                        return <div className='border p-4 mt-3 w-[350px]' key={`player${index}`}><h1>{player.name}</h1>{result}</div>
-                    })}
-                </div>
 
-                {bunkerStats && bunkerRelatives && <BunkerState bunkerStats={bunkerStats} bunkerRelatives={bunkerRelatives} />}
+                {prevRoundStatistics && <FinaleNewRoundInfoAlert display={showRoundInfoAlert} hideFunction={() => { setShowRoundInfoAlert(false) }} roundStatistics={prevRoundStatistics} />}
 
-                {pickedEventId === -1 && eventIds &&
-                    <div className='flex flex-col gap-4 justify-center mt-5'>
-                        <h2 className='text-center'>Сделайте ваш выбор</h2>
-                        {eventIds.map((eventId, index) => {
-                            return (
-                                <div onClick={() => handleChooseEventClick(eventId)} className='border p-4 rounded-md w-full hover:scale-105 hover:bg-primary transition-all cursor-pointer' key={`event${index}`}>
-                                    <h2>{Events[eventId].title}</h2>
-                                    <p className='text-muted-foreground'>{Events[eventId].description}</p>
-                                </div>
-                            )
-                        })}
+                <div className='flex flex-col md:flex-row gap-10 justify-center items-center w-full'>
+
+                    <div className='md:w-1/2 flex justify-center'>
+                        {bunkerStats && bunkerRelatives && <BunkerState bunkerStats={bunkerStats} bunkerRelatives={bunkerRelatives} />}
                     </div>
-                }
 
-                {pickedEvent &&
-                    <div>
-                        {pickedEvent.type === 'Complex' &&
+                    <div className='md:w-1/2'>
+                        {turn === 'Eliminated' && eventIds &&
                             <div className='flex flex-col gap-4 justify-center mt-5'>
                                 <h2 className='text-center'>Сделайте ваш выбор</h2>
-                                {pickedEvent.responses.map((response, index) => {
+                                {eventIds.map((eventId, index) => {
                                     return (
-                                        <div onClick={() => handleChooseResponseClick(index)} className='border p-4 rounded-md w-full hover:scale-105 hover:bg-primary transition-all cursor-pointer' key={`event${index}`}>
-                                            <h2>{response.title}</h2>
+                                        <div onClick={() => handleChooseEventClick(eventId)} className='border p-4 rounded-md w-full hover:scale-105 hover:bg-primary transition-all cursor-pointer' key={`event${index}`}>
+                                            <h2>{Events[eventId].title}</h2>
+                                            <p className='text-muted-foreground'>{Events[eventId].description}</p>
                                         </div>
                                     )
                                 })}
                             </div>
                         }
+
+                        {turn === 'Survivors' && pickedEvent &&
+                            <div>
+                                {<div className='flex flex-col gap-4 justify-center mt-5'>
+                                    <h2 className='text-center'>Сделайте ваш выбор</h2>
+                                    {pickedEvent.responses.map((response, index) => {
+                                        return (
+                                            <div onClick={() => handleChooseResponseClick(index)} className='border p-4 rounded-md w-full hover:scale-105 hover:bg-primary transition-all cursor-pointer' key={`event${index}`}>
+                                                <h2>{response.title}</h2>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                                }
+                            </div>
+                        }
                     </div>
-                }
+
+                </div>
+
 
             </div>
         </div>

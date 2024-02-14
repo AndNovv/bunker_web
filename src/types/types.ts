@@ -13,6 +13,46 @@ export type JoinDataResponse = {
 
 export type GameStatus = 'waiting' | 'preparing' | 'revealing' | 'discussion' | 'voting' | 'second voting' | 'results'
 
+
+export type DiseaseStatus = 'cured' | 'ill' | 'death' | 'epidemic'
+
+export type PlayerDiseaseInfo = {
+    playerId: number,
+    status: DiseaseStatus,
+    medConsumption: number
+}
+
+export type FinaleRoundStatistic = {
+    // Не хватило еды
+    // Закончились медикаменты
+    // Сводка по болезням
+    // Эпидемия
+    // Система жизнеобеспечения сломана
+    foodEnough: boolean
+    medicinesEnough: boolean
+    electricityWorks: boolean
+    waterWorks: boolean
+    airWorks: boolean
+    diseasesInfo: PlayerDiseaseInfo[]
+
+    responseData: {
+        title: string
+        consequenceTitle: string
+        consequenceDescription: string
+    }
+}
+
+export type FinaleType = {
+    round: number
+    maxRounds: number
+    pickedEventId: number | null
+    survivingPlayers: PlayerType[]
+    eliminatedPlayers: PlayerType[]
+    eventsIdList: number[]
+    turn: 'Survivors' | 'Eliminated'
+    prevRoundStatistics: FinaleRoundStatistic
+}
+
 export type GameType = {
     gamestatus: GameStatus,
     code: string,
@@ -22,9 +62,11 @@ export type GameType = {
     secondVotingOptions: number[],
     roundsFlow: number[],
     countOfNotEliminatedPlayers: number,
-    bunkerStats: BunkerStatsType,
+    bunkerStats: BunkerStatsType
     bunkerRelatives: BunkerRelatives,
+    finale: FinaleType,
 }
+
 
 export type BunkerStat<TTitle> = {
     key: BunkerStats,
@@ -86,6 +128,7 @@ export type RelativePlayerStat = {
 
 export type PlayerRelatives = {
     "Intelligence": RelativePlayerStat,
+    "Social": RelativePlayerStat,
 }
 
 export type PlayerType = {
@@ -203,10 +246,8 @@ export type useActionCardDataType = {
 
 // Events 
 
-export type TypesOfEvent = 'Simple' | 'Complex'
-
-export type SimpleConsequence = {
-    type: 'Simple'
+type SimpleConsequence = {
+    type: 'Simple',
     title: string,
     descrition: string,
     probability: number,
@@ -224,7 +265,7 @@ type BunkerDependency = {
 
 type probabilityDependence = PlayerDependency | BunkerDependency
 
-export type ComplexConsequence = {
+type ComplexConsequence = {
     type: 'Complex',
     title: string,
     descrition: string,
@@ -245,6 +286,7 @@ export type ComplexEvent = {
     title: string,
     description: string,
     responses: EventResponse[],
+
 }
 
 export type SimpleEvent = {
@@ -252,9 +294,10 @@ export type SimpleEvent = {
     title: string,
     description: string,
     effect: EventEffect[],
+    responses: EventResponse[],
 }
 
-export type EventEffect = {
+type EventEffect = {
     stat: BunkerStats,
     value: number,
 } | {
