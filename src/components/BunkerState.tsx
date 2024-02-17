@@ -15,17 +15,24 @@ import BunkerSystemState from './BunkerSystemState'
 
 const BunkerState = ({ bunkerStats, bunkerRelatives }: { bunkerStats: BunkerStatsType, bunkerRelatives: BunkerRelatives }) => {
 
-    const { countOfNotEliminatedPlayers } = useGameInfo((state) => {
+    const { players } = useGameInfo((state) => {
         return {
-            countOfNotEliminatedPlayers: state.countOfNotEliminatedPlayers,
+            players: state.players,
         }
     })
 
-    const countOfPlayers = 6
+    const countOfPlayers = Math.floor(players.length / 2)
 
     const maxAnxietyLevel = countOfPlayers * (socialAverage + psychoAverage)
 
-    const anxietyPercentage = (bunkerStats.Anxiety.value / maxAnxietyLevel * 100) >= 100 ? 100 : bunkerStats.Anxiety.value / maxAnxietyLevel * 100
+    let anxietyPercentage = bunkerStats.Anxiety.value / maxAnxietyLevel * 100
+
+    if (anxietyPercentage > 100) {
+        anxietyPercentage = 100
+    }
+    else if (anxietyPercentage < 0) {
+        anxietyPercentage = 0
+    }
 
     return (
         <Card className="max-w-fit">

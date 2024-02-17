@@ -16,11 +16,25 @@ export type GameStatus = 'waiting' | 'preparing' | 'revealing' | 'discussion' | 
 
 export type DiseaseStatus = 'cured' | 'ill' | 'death' | 'epidemic'
 
-export type PlayerDiseaseInfo = {
-    playerId: number,
-    status: DiseaseStatus,
-    medConsumption: number
+export type CuredDiseaseInfo = {
+    status: 'cured'
+    playerId: number
+    diseaseName: string
 }
+
+export type DeathDiseaseInfo = {
+    status: 'death'
+    playerId: number
+}
+
+export type EpidemicDiseaseInfo = {
+    status: 'epidemic'
+    playerId: number
+    medConsumption: number
+    diseaseName: string
+}
+
+export type PlayerDiseaseInfo = CuredDiseaseInfo | DeathDiseaseInfo | EpidemicDiseaseInfo
 
 export type FinaleRoundStatistic = {
     // Не хватило еды
@@ -40,16 +54,18 @@ export type FinaleRoundStatistic = {
         consequenceTitle: string
         consequenceDescription: string
     }
+    eventTargetPlayerId: number
 }
 
 export type FinaleType = {
     round: number
     maxRounds: number
     pickedEventId: number | null
-    survivingPlayers: PlayerType[]
-    eliminatedPlayers: PlayerType[]
+    survivingPlayersId: number[]
+    eliminatedPlayersId: number[]
     eventsIdList: number[]
     turn: 'Survivors' | 'Eliminated'
+    eventTargetPlayerId: number
     prevRoundStatistics: FinaleRoundStatistic
 }
 

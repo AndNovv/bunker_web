@@ -6,7 +6,7 @@ const StatEvaluationProgress = ({ stat }: { stat: RelativeStat<string> }) => {
 
     return (
         <div>
-            <h3 className='mb-1'>{stat.title}</h3>
+            <h3 className='mb-1'>{`${stat.title} Среднее: ${stat.expected} Ваше: ${stat.real}`}</h3>
             <div className='h-10 w-full rounded-md border flex flex-row overflow-hidden'>
                 <div className={`flex justify-center items-center w-full h-full border-r ${stat.value === 0 ? 'bg-primary' : null}`}><ChevronsDown /></div>
                 <div className={`flex justify-center items-center w-full h-full border-r ${stat.value === 1 ? 'bg-primary' : null}`}><ChevronDown /></div>

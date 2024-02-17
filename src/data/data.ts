@@ -276,8 +276,8 @@ export const Events: readonly EventType[] = [
     {
         type: 'Simple',
         title: 'Часть продовольствия испортилась из-за неправильного хранения',
-        description: '-5 продовольствия',
-        effect: [{ stat: 'Food', value: -5 }],
+        description: 'Вы теряете продовольствие',
+        effect: [{ stat: 'Food', value: -1.3 }],
         responses: defaultResponse,
     },
     {
@@ -314,7 +314,7 @@ export const Events: readonly EventType[] = [
     {
         type: 'Complex',
         title: 'Игрок заболел',
-        description: 'Случайный игрок заболеет',
+        description: 'Надо было шапку надевать',
         responses: [
             {
                 title: 'Само пройдет',
@@ -349,18 +349,18 @@ export const Events: readonly EventType[] = [
                     {
                         type: 'Complex',
                         title: 'Игрок тяжело перенес заболевание',
-                        descrition: '-3 медикаментов и +2 к напряженности',
+                        descrition: '+2 к напряженности. Также вы теряете медикаменты',
                         probability: [0.6, 0.5, 0.4, 0.3, 0.2],
                         probabilityDependence: { type: 'Bunker', stat: 'Med' },
-                        effect: [{ stat: 'Anxiety', value: 2 }, { stat: 'Medicines', value: -3 }],
+                        effect: [{ stat: 'Anxiety', value: 2 }, { stat: 'Medicines', value: -0.5 }],
                     },
                     {
                         type: 'Complex',
                         title: 'Игрок быстро пошел на поправку',
-                        descrition: '-3 медикаментов',
+                        descrition: 'Вы теряете медикаменты',
                         probability: [0.4, 0.5, 0.6, 0.7, 0.8],
                         probabilityDependence: { type: 'Bunker', stat: 'Med' },
-                        effect: [{ stat: 'Medicines', value: -3 }],
+                        effect: [{ stat: 'Medicines', value: -0.5 }],
                     },
 
                 ]
@@ -372,18 +372,18 @@ export const Events: readonly EventType[] = [
                     {
                         type: 'Complex',
                         title: 'Игрок тяжело перенес заболевание',
-                        descrition: '-5 медикаментов и +2 к напряженности',
+                        descrition: '+2 к напряженности. Также вы теряете медикаменты',
                         probability: [0.5, 0.4, 0.3, 0.2, 0.1],
                         probabilityDependence: { type: 'Bunker', stat: 'Med' },
-                        effect: [{ stat: 'Anxiety', value: 2 }, { stat: 'Medicines', value: -5 }],
+                        effect: [{ stat: 'Anxiety', value: 2 }, { stat: 'Medicines', value: -1 }],
                     },
                     {
                         type: 'Complex',
                         title: 'Игрок быстро пошел на поправку',
-                        descrition: '-5 медикаментов',
+                        descrition: 'Вы теряете медикаменты',
                         probability: [0.5, 0.6, 0.7, 0.8, 0.9],
                         probabilityDependence: { type: 'Bunker', stat: 'Med' },
-                        effect: [{ stat: 'Medicines', value: -5 }],
+                        effect: [{ stat: 'Medicines', value: -1 }],
                     },
 
                 ]
@@ -392,8 +392,8 @@ export const Events: readonly EventType[] = [
     },
 
     {
-        title: 'Рейд на бункер',
         type: 'Complex',
+        title: 'Рейд на бункер',
         description: 'На бункер нападают выжившие',
         responses: [
             {
@@ -410,10 +410,10 @@ export const Events: readonly EventType[] = [
                     {
                         type: 'Complex',
                         title: 'Вас не стали слушать и обокрали',
-                        descrition: 'Продовольствие -20; Медикаменты -10; Напряженность +2',
+                        descrition: 'Вы теряете продовольствие и медикаменты',
                         probability: [1, 0.8, 0.6, 0.4, 0.3],
                         probabilityDependence: { type: 'Player', stat: 'Intelligence' },
-                        effect: [{ stat: 'Anxiety', value: 2 }, { stat: 'Food', value: -20 }, { stat: 'Medicines', value: -10 }]
+                        effect: [{ stat: 'Food', value: -1 }, { stat: 'Medicines', value: -1 }]
                     },
                 ]
             },
@@ -431,10 +431,10 @@ export const Events: readonly EventType[] = [
                     {
                         type: 'Complex',
                         title: 'Рейдеры оказались сильнее, вас ограбили',
-                        descrition: 'Продовольствие -10; Медикаменты -5; Напряженность +2',
+                        descrition: 'Напряженность +2; Также вы теряете продовольствие',
                         probability: [1, 0.8, 0.6, 0.4, 0.3],
                         probabilityDependence: { type: 'Bunker', stat: 'Safety' },
-                        effect: [{ stat: 'Anxiety', value: 2 }, { stat: 'Food', value: -10 }, { stat: 'Medicines', value: -5 }]
+                        effect: [{ stat: 'Anxiety', value: 2 }, { stat: 'Food', value: -1 }]
                     },
                 ]
             },
