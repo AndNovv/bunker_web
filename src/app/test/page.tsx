@@ -13,30 +13,52 @@ import PlayerCard from '@/components/PlayerCard';
 import { Button } from '@/components/ui/button';
 import PickEventDisplay from '@/components/PickEventDisplay';
 import PickResponseDisplay from '@/components/PickResponseDisplay';
+import { useRouter } from 'next/navigation';
+import { calculateMaxAnxietyLevel } from '@/lib/utils';
 
 const Test = () => {
 
+    const router = useRouter();
 
-    const { players, updatePlayers } = useGameInfo((state) => {
+    const { players, updatePlayers, finale, setFinale, bunkerStats, setBunkerStats } = useGameInfo((state) => {
         return {
             players: state.players,
             updatePlayers: state.updatePlayers,
+            finale: state.finale,
+            setFinale: state.setFinale,
+            bunkerStats: state.bunkerStats,
+            setBunkerStats: state.setBunkerStats,
         }
     })
 
-    const [bunkerStats, setBunkerStats] = useState<BunkerStatsType>()
     const [bunkerRelatives, setBunkerRelatives] = useState<BunkerRelatives>()
 
+    const [open, setOpen] = useState(false)
 
-    const [finaleInfo, setFinaleInfo] = useState<FinaleType>()
+    const round = finale?.round
+    const maxAnxietyLevel = calculateMaxAnxietyLevel(players.length)
 
-    const round = finaleInfo?.round
-    const turn = finaleInfo?.turn
-    const eventIds = finaleInfo?.eventsIdList
-    const pickedEventId = finaleInfo?.pickedEventId
+    const checkForEndOfTheGame = () => {
+        if (bunkerStats && bunkerStats.Anxiety.value >= maxAnxietyLevel) {
+            router.push('/gameresults?reason=Напряженность в бункере поднялась до предела')
+        }
+        else if (finale && finale.survivingPlayersId.length === 0) {
+            router.push('/gameresults?reason=Все выжившие погибли')
+        }
+        else if (finale && finale.round >= finale.maxRounds - 1) {
+            router.push('/gameresults?reason=Выжившие смогли пережить 10 месяцев в бункере')
+        }
+    }
+
+    const turn = finale?.turn
+    const eventIds = finale?.eventsIdList
+    const pickedEventId = finale?.pickedEventId
     const pickedEvent = typeof pickedEventId === 'number' ? Events[pickedEventId] : null
 
-    const prevRoundStatistics = finaleInfo?.prevRoundStatistics
+    const survivingPlayerTurnId = finale?.survivingPlayerTurnId
+    const eliminatedPlayerTurnId = finale?.eliminatedPlayerTurnId
+
+    const prevRoundStatistics = finale?.prevRoundStatistics
 
     const [showRoundInfoAlert, setShowRoundInfoAlert] = useState(false)
 
@@ -57,40 +79,38 @@ const Test = () => {
             setBunkerStats(game.bunkerStats)
             setCode(game.code)
             setBunkerRelatives(game.bunkerRelatives)
-            setFinaleInfo(game.finale)
-            socket.emit("get_events_to_pick", code)
+            setFinale(game.finale)
+            setOpen(true)
         })
 
-        socket.on("get_events_to_pick_response", (finaleInfo: FinaleType) => {
-            setFinaleInfo(finaleInfo)
-        })
-
-        socket.on("event_picked", ({ finaleInfo, bunkerStats }: { finaleInfo: FinaleType, bunkerStats: BunkerStatsType }) => {
-            setFinaleInfo(finaleInfo)
+        socket.on("event_picked", ({ finale, bunkerStats }: { finale: FinaleType, bunkerStats: BunkerStatsType }) => {
+            setFinale(finale)
             setBunkerStats(bunkerStats)
-            if (typeof finaleInfo.pickedEventId === 'number' && Events[finaleInfo.pickedEventId].type === 'Simple') {
+            if (typeof finale.pickedEventId === 'number' && Events[finale.pickedEventId].type === 'Simple') {
                 toast({
-                    title: finaleInfo.prevRoundStatistics.responseData.title,
-                    description: finaleInfo.prevRoundStatistics.responseData.consequenceDescription
+                    title: finale.prevRoundStatistics.responseData.title,
+                    description: finale.prevRoundStatistics.responseData.consequenceDescription
 
                 })
             }
+            setOpen(true)
         })
 
         socket.on("pick_response_response", (game: GameType) => {
-            setFinaleInfo(game.finale)
+            setOpen(false)
+            setFinale(game.finale)
             updatePlayers(game.players)
             setBunkerStats(game.bunkerStats)
             setBunkerRelatives(game.bunkerRelatives)
+            checkForEndOfTheGame()
         })
 
         return () => {
             socket.off("test_get_players")
-            socket.off("get_events_to_pick_response")
             socket.off("event_picked")
             socket.off("pick_response_response")
         }
-    }, [eventIds, pickedEvent, pickedEventId])
+    }, [eventIds, pickedEvent, pickedEventId, updatePlayers, code, toast, setFinale, setBunkerStats])
 
     const handleChooseEventClick = (eventId: number) => {
         socket.emit("pick_event", { code, eventId })
@@ -108,10 +128,10 @@ const Test = () => {
         <div className='flex flex-col gap-6 justify-center items-center px-10 py-4'>
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
-                {finaleInfo?.round && finaleInfo.maxRounds && (
+                {finale?.round && finale.maxRounds && (
                     <>
-                        <h2>{`Текущий месяц: ${finaleInfo?.round}`}</h2>
-                        <h2>{`Осталось прожить: ${finaleInfo?.maxRounds - finaleInfo?.round}`}</h2>
+                        <h2>{`Текущий месяц: ${finale?.round}`}</h2>
+                        <h2>{`Осталось прожить: ${finale?.maxRounds - finale?.round}`}</h2>
                     </>
                 )}
                 <Button onClick={startGame}>Перезапуск</Button>
@@ -119,7 +139,7 @@ const Test = () => {
             <div className='flex flex-col gap-4 justify-center items-center'>
 
                 <div className='flex flex-row gap-1 flex-wrap justify-center'>
-                    {finaleInfo && finaleInfo.survivingPlayersId.map((playerId, index) => {
+                    {finale && finale.survivingPlayersId.map((playerId, index) => {
                         const player = players[playerId]
                         return (
                             <PlayerCard key={`player${index}`} player={player} cardType='opponent game card' />
@@ -127,8 +147,14 @@ const Test = () => {
                     })}
                 </div>
 
+                <div>
+                    <h2>{`Ход ${turn === 'Eliminated' ? 'Изганных' : 'Выживших'}`}</h2>
+                    {turn === 'Eliminated' && typeof eliminatedPlayerTurnId === 'number' && <p>{`Ход игрока: ${players[eliminatedPlayerTurnId].name}`}</p>}
+                    {turn === 'Survivors' && typeof survivingPlayerTurnId === 'number' && <p>{`Ход игрока: ${players[survivingPlayerTurnId].name}`}</p>}
+                </div>
 
-                {prevRoundStatistics && <FinaleNewRoundInfoAlert display={showRoundInfoAlert} hideFunction={() => { setShowRoundInfoAlert(false) }} finale={finaleInfo} />}
+
+                {prevRoundStatistics && <FinaleNewRoundInfoAlert display={showRoundInfoAlert} hideFunction={() => { setShowRoundInfoAlert(false); setOpen(true) }} finale={finale} />}
 
                 <div className='flex flex-col md:flex-row mg:gap-10 gap-4 justify-center items-center w-full'>
 
@@ -138,18 +164,14 @@ const Test = () => {
 
                     <div className='md:w-1/2'>
                         {turn === 'Eliminated' && eventIds &&
-                            <PickEventDisplay eventIds={eventIds} handleChooseEventClick={handleChooseEventClick} playerName={players[finaleInfo.eventTargetPlayerId].name} />
+                            <PickEventDisplay eventIds={eventIds} handleChooseEventClick={handleChooseEventClick} playerName={players[finale.eventTargetPlayerId].name} open={open} />
                         }
 
-                        {turn === 'Survivors' && pickedEvent && finaleInfo &&
-                            <PickResponseDisplay event={pickedEvent} handleChooseResponseClick={handleChooseResponseClick} medicines={bunkerStats?.Medicines.value ? bunkerStats?.Medicines.value : 0} playerName={players[finaleInfo.eventTargetPlayerId].name} />
+                        {turn === 'Survivors' && pickedEvent && finale &&
+                            <PickResponseDisplay event={pickedEvent} handleChooseResponseClick={handleChooseResponseClick} medicines={bunkerStats?.Medicines.value ? bunkerStats?.Medicines.value : 0} playerName={players[finale.eventTargetPlayerId].name} open={open} />
                         }
                     </div>
-
-
                 </div>
-
-
             </div>
         </div>
     )

@@ -98,21 +98,24 @@ const Voting = () => {
             </div>
             {secondVote && <h2 className='text-center text-xl'>{`Голоса разделились между ${secondVotingOptions.length} игроками. Попробуйте обсудить ваше решение еще раз, если вы снова не сможете договориться, игру покинет случайный кандидат!`}</h2>}
 
-            {!secondVote && players.map((player, index) => {
-                if (!player.eliminated) {
-                    return (
-                        <PlayerCardForVoting onClick={() => setVote(player.id)} key={`playerCard${index}`} player={player} selected={vote === player.id} />
-                    )
+            <div className='flex flex-row flex-wrap gap-5'>
+                {!secondVote && players.map((player, index) => {
+                    if (!player.eliminated) {
+                        return (
+                            <PlayerCardForVoting onClick={() => setVote(player.id)} key={`playerCard${index}`} player={player} selected={vote === player.id} />
+                        )
+                    }
                 }
-            }
-            )}
-            {secondVote && secondVotingOptions.map((id, index) => {
-                if (!players[id].eliminated) {
-                    return (
-                        <PlayerCardForVoting onClick={() => setVote(id)} key={`playerCard${index}`} player={players[id]} selected={vote === id} />
-                    )
-                }
-            })}
+                )}
+                {secondVote && secondVotingOptions.map((id, index) => {
+                    if (!players[id].eliminated) {
+                        return (
+                            <PlayerCardForVoting onClick={() => setVote(id)} key={`playerCard${index}`} player={players[id]} selected={vote === id} />
+                        )
+                    }
+                })}
+
+            </div>
 
             <Button onClick={voteHandle} disabled={vote === -1 || voted || eliminated}>Голосовать</Button>
         </div>

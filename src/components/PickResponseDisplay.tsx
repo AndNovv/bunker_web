@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useMediaQuery from '@/hooks/useMediaQuery';
 
 import {
@@ -14,9 +14,15 @@ import {
 import { EventResponse, EventType } from '@/types/types';
 import { Button } from './ui/button';
 
-const PickResponseDisplay = ({ event, handleChooseResponseClick, medicines, playerName }: { event: EventType, handleChooseResponseClick: (index: number) => void, medicines: number, playerName: string }) => {
+const PickResponseDisplay = ({ event, handleChooseResponseClick, medicines, playerName, open }: { event: EventType, handleChooseResponseClick: (index: number) => void, medicines: number, playerName: string, open: boolean }) => {
     const isDesktop = useMediaQuery("(min-width: 768px)")
-    const [open, setOpen] = useState(false)
+    const [drawerOpen, setDrawerOpen] = useState(open)
+
+    useEffect(() => {
+        if (open) {
+            setDrawerOpen(true)
+        }
+    }, [open])
 
     const VariantIsValid = (response: EventResponse) => {
 
@@ -60,7 +66,7 @@ const PickResponseDisplay = ({ event, handleChooseResponseClick, medicines, play
     }
 
     return (
-        <Drawer open={open} onOpenChange={setOpen}>
+        <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
             <DrawerTrigger asChild>
                 <Button variant="outline">Выбор события</Button>
             </DrawerTrigger>

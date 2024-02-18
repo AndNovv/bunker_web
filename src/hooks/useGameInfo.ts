@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import { PlayerType } from '../types/types'
+import { BunkerStatsType, FinaleType, PlayerType } from '../types/types'
 
 type GameInfoType = {
     code: string,
@@ -10,13 +10,21 @@ type GameInfoType = {
     round: number,
     eliminated: boolean,
     countOfNotEliminatedPlayers: number,
+
     roundsFlow: number[],
+    updateRoundsFlow: (roundsFlow: number[]) => void,
+
+    bunkerStats: BunkerStatsType | null
+    setBunkerStats: (bunkerStats: BunkerStatsType) => void
+
+    finale: FinaleType | null
+    setFinale: (finale: FinaleType) => void
+
     initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[], eliminated: boolean, countOfNotEliminatedPlayers: number, roundsFlow: number[]) => void,
     addNewPlayer: (player: PlayerType) => void,
     updatePlayers: (players: PlayerType[]) => void,
     eliminatePlayer: (playerId: number) => void,
     incrementRound: () => void,
-    updateRoundsFlow: (roundsFlow: number[]) => void,
 }
 
 export const useGameInfo = create<GameInfoType>((set) => {
@@ -29,6 +37,22 @@ export const useGameInfo = create<GameInfoType>((set) => {
         eliminated: false,
         countOfNotEliminatedPlayers: 0,
         roundsFlow: [],
+        finale: null,
+        setFinale: (finale: FinaleType) => set((state) => {
+            return {
+                ...state,
+                finale
+            }
+        }),
+
+        bunkerStats: null,
+        setBunkerStats: (bunkerStats: BunkerStatsType) => set((state) => {
+            return {
+                ...state,
+                bunkerStats
+            }
+        }),
+
         initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[], eliminated: boolean, countOfNotEliminatedPlayers: number, roundsFlow: number[]) => set(() => ({ code, name, round, playerId, players, eliminated, countOfNotEliminatedPlayers, roundsFlow })),
         addNewPlayer: (player: PlayerType) => set((state) => {
             const newPlayers = state.players

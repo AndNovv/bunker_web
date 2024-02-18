@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import useMediaQuery from '@/hooks/useMediaQuery';
 
@@ -15,10 +15,16 @@ import {
 import { Button } from './ui/button';
 import { Events } from '@/data/data';
 
-const PickEventDisplay = ({ eventIds, handleChooseEventClick, playerName }: { eventIds: number[], handleChooseEventClick: (eventId: number) => void, playerName: string }) => {
+const PickEventDisplay = ({ eventIds, handleChooseEventClick, playerName, open }: { eventIds: number[], handleChooseEventClick: (eventId: number) => void, playerName: string, open: boolean }) => {
 
     const isDesktop = useMediaQuery("(min-width: 768px)")
-    const [open, setOpen] = useState(false)
+    const [drawerOpen, setDrawerOpen] = useState(open)
+
+    useEffect(() => {
+        if (open) {
+            setDrawerOpen(true)
+        }
+    }, [open])
 
     if (isDesktop) {
         return (
@@ -37,7 +43,7 @@ const PickEventDisplay = ({ eventIds, handleChooseEventClick, playerName }: { ev
     }
 
     return (
-        <Drawer open={open} onOpenChange={setOpen}>
+        <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
             <DrawerTrigger asChild>
                 <Button variant="outline">Выбор события</Button>
             </DrawerTrigger>

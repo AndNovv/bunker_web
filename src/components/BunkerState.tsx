@@ -5,12 +5,12 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { BunkerRelatives, BunkerStatsType, CardType, PlayerType } from '@/types/types'
+import { BunkerRelatives, BunkerStatsType } from '@/types/types'
 import { Progress } from './ui/progress'
 import { useGameInfo } from '@/hooks/useGameInfo'
-import { phisicsAverage, psychoAverage, socialAverage } from '@/data/data'
 import StatEvaluationProgress from './StatEvaluationProgress'
 import BunkerSystemState from './BunkerSystemState'
+import { calculateMaxAnxietyLevel } from '@/lib/utils'
 
 
 const BunkerState = ({ bunkerStats, bunkerRelatives }: { bunkerStats: BunkerStatsType, bunkerRelatives: BunkerRelatives }) => {
@@ -21,9 +21,7 @@ const BunkerState = ({ bunkerStats, bunkerRelatives }: { bunkerStats: BunkerStat
         }
     })
 
-    const countOfPlayers = Math.floor(players.length / 2)
-
-    const maxAnxietyLevel = countOfPlayers * (socialAverage + psychoAverage)
+    const maxAnxietyLevel = calculateMaxAnxietyLevel(players.length)
 
     let anxietyPercentage = bunkerStats.Anxiety.value / maxAnxietyLevel * 100
 
