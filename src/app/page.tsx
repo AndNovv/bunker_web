@@ -1,13 +1,17 @@
 import JoinGame from '@/components/JoinGame'
 import { ModeToggle } from '@/components/ModeToggle'
+import { Button } from '@/components/ui/button'
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen gap-4 flex-col items-center justify-between p-24">
-      <div className='flex justify-between items-center'>
-        <ModeToggle />
+    <main className="min-h-screen md:px-24 px-12 pt-10">
+      <div className='flex gap-10 flex-col'>
+        <div className='flex w-full justify-between items-center'>
+          <ModeToggle />
+          <Button>Настройки</Button>
+        </div>
+        <JoinGame />
       </div>
-      <JoinGame />
     </main>
   )
 }

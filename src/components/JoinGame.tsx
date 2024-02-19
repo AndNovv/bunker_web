@@ -28,7 +28,7 @@ const JoinGame: React.FC = () => {
 
     useEffect(() => {
         socket.on("create_game_response", (response: responseType<{ code: string, name: string, players: PlayerType[] }>) => {
-            setGameInfo(response.data.code, response.data.name, 1, 0, response.data.players, false, 1, [])
+            setGameInfo(response.data.code, response.data.name, 1, 0, response.data.players, false, 1, [], null, null, null)
             router.push('/waiting')
         })
 
@@ -41,7 +41,10 @@ const JoinGame: React.FC = () => {
                     response.data.game.players,
                     response.data.game.players[response.data.playerId].eliminated,
                     response.data.game.countOfNotEliminatedPlayers,
-                    response.data.game.roundsFlow)
+                    response.data.game.roundsFlow,
+                    response.data.game.bunkerStats,
+                    response.data.game.finale,
+                    response.data.game.bunkerRelatives)
 
                 if (response.data.game.gamestatus === 'waiting') {
                     router.push(`/waiting`)

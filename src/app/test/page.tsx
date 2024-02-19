@@ -5,14 +5,14 @@ import { useGameInfo } from '../../hooks/useGameInfo'
 import { socket } from '@/socket'
 import { BunkerRelatives, BunkerStatsType, FinaleType, GameType } from '../../types/types';
 import { ModeToggle } from '@/components/ModeToggle'
-import BunkerState from '@/components/BunkerState';
+import BunkerState from '@/components/BunkerState/BunkerState';
 import { Events } from '@/data/data';
 import { useToast } from '@/components/ui/use-toast';
-import FinaleNewRoundInfoAlert from '@/components/FinaleNewRoundInfoAlert';
+import FinaleNewRoundInfoAlert from '@/components/FinaleComponents/FinaleNewRoundInfoAlert';
 import PlayerCard from '@/components/PlayerCard';
 import { Button } from '@/components/ui/button';
-import PickEventDisplay from '@/components/PickEventDisplay';
-import PickResponseDisplay from '@/components/PickResponseDisplay';
+import PickEventDisplay from '@/components/FinaleComponents/PickEventDisplay';
+import PickResponseDisplay from '@/components/FinaleComponents/PickResponseDisplay';
 import { useRouter } from 'next/navigation';
 import { calculateMaxAnxietyLevel } from '@/lib/utils';
 

@@ -1,7 +1,7 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { FinaleRoundStatistic, FinaleType } from "@/types/types"
 import React from 'react'
-import { Button } from "./ui/button"
+import { Button } from "../ui/button"
 import { useGameInfo } from "@/hooks/useGameInfo"
 
 const FinaleNewRoundInfoAlert = ({ display, hideFunction, finale }: { display: boolean, hideFunction: () => void, finale: FinaleType }) => {

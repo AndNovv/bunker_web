@@ -12,10 +12,12 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer"
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import { Events } from '@/data/data';
+import { cn } from '@/lib/utils';
+import PickEventOptions from './PickEventOptions';
 
-const PickEventDisplay = ({ eventIds, handleChooseEventClick, playerName, open }: { eventIds: number[], handleChooseEventClick: (eventId: number) => void, playerName: string, open: boolean }) => {
+const PickEventDisplay = ({ muted, eventIds, handleChooseEventClick, playerName, open }: { muted: boolean, eventIds: number[], handleChooseEventClick: (eventId: number) => void, playerName: string, open: boolean }) => {
 
     const isDesktop = useMediaQuery("(min-width: 768px)")
     const [drawerOpen, setDrawerOpen] = useState(open)
@@ -26,18 +28,13 @@ const PickEventDisplay = ({ eventIds, handleChooseEventClick, playerName, open }
         }
     }, [open])
 
+    const mutedStyles = cn()
+
     if (isDesktop) {
         return (
             <div className='flex flex-col gap-4 justify-center mt-5'>
                 <h2 className='text-center'>Выберите какое событие произойдет в бункере</h2>
-                {eventIds.map((eventId, index) => {
-                    return (
-                        <div onClick={() => handleChooseEventClick(eventId)} className='border p-4 rounded-md w-full hover:scale-105 hover:bg-primary transition-all cursor-pointer' key={`event${index}`}>
-                            <h2>{Events[eventId].title === 'Игрок заболел' ? `${Events[eventId].title} (${playerName})` : Events[eventId].title}</h2>
-                            <p className='text-muted-foreground'>{Events[eventId].description}</p>
-                        </div>
-                    )
-                })}
+                <PickEventOptions muted={muted} playerName={playerName} eventIds={eventIds} handleChooseEventClick={handleChooseEventClick} />
             </div>
         )
     }
@@ -54,14 +51,7 @@ const PickEventDisplay = ({ eventIds, handleChooseEventClick, playerName, open }
                         Внимательно изучите слабые стороны выживающих
                     </DrawerDescription>
                     <div className='mt-4 flex flex-col gap-2'>
-                        {eventIds.map((eventId, index) => {
-                            return (
-                                <div onClick={() => handleChooseEventClick(eventId)} className='border p-4 rounded-md w-full hover:scale-105 hover:bg-primary transition-all cursor-pointer' key={`event${index}`}>
-                                    <h2>{Events[eventId].title === 'Игрок заболел' ? `${Events[eventId].title} (${playerName})` : Events[eventId].title}</h2>
-                                    <p className='text-muted-foreground'>{Events[eventId].description}</p>
-                                </div>
-                            )
-                        })}
+                        <PickEventOptions muted={muted} playerName={playerName} eventIds={eventIds} handleChooseEventClick={handleChooseEventClick} />
                     </div>
                 </DrawerHeader>
                 <DrawerFooter className="pt-2">

@@ -6,7 +6,7 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { BunkerRelatives, BunkerStatsType } from '@/types/types'
-import { Progress } from './ui/progress'
+import { Progress } from '../ui/progress'
 import { useGameInfo } from '@/hooks/useGameInfo'
 import StatEvaluationProgress from './StatEvaluationProgress'
 import BunkerSystemState from './BunkerSystemState'

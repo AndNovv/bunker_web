@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import { BunkerStatsType, FinaleType, PlayerType } from '../types/types'
+import { BunkerRelatives, BunkerStatsType, FinaleType, PlayerType } from '../types/types'
 
 type GameInfoType = {
     code: string,
@@ -20,7 +20,10 @@ type GameInfoType = {
     finale: FinaleType | null
     setFinale: (finale: FinaleType) => void
 
-    initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[], eliminated: boolean, countOfNotEliminatedPlayers: number, roundsFlow: number[]) => void,
+    bunkerRelatives: BunkerRelatives | null
+    setBunkerRelatives: (bunkerRelatives: BunkerRelatives) => void
+
+    initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[], eliminated: boolean, countOfNotEliminatedPlayers: number, roundsFlow: number[], bunkerStats: BunkerStatsType | null, finale: FinaleType | null, bunkerRelatives: BunkerRelatives | null) => void,
     addNewPlayer: (player: PlayerType) => void,
     updatePlayers: (players: PlayerType[]) => void,
     eliminatePlayer: (playerId: number) => void,
@@ -53,7 +56,15 @@ export const useGameInfo = create<GameInfoType>((set) => {
             }
         }),
 
-        initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[], eliminated: boolean, countOfNotEliminatedPlayers: number, roundsFlow: number[]) => set(() => ({ code, name, round, playerId, players, eliminated, countOfNotEliminatedPlayers, roundsFlow })),
+        bunkerRelatives: null,
+        setBunkerRelatives: (bunkerRelatives: BunkerRelatives) => set((state) => {
+            return {
+                ...state,
+                bunkerRelatives
+            }
+        }),
+
+        initialStart: (code: string, name: string, round: number, playerId: number, players: PlayerType[], eliminated: boolean, countOfNotEliminatedPlayers: number, roundsFlow: number[], bunkerStats: BunkerStatsType | null, finale: FinaleType | null, bunkerRelatives: BunkerRelatives | null) => set(() => ({ code, name, round, playerId, players, eliminated, countOfNotEliminatedPlayers, roundsFlow, bunkerStats, finale, bunkerRelatives })),
         addNewPlayer: (player: PlayerType) => set((state) => {
             const newPlayers = state.players
             newPlayers.push(player)
