@@ -18,7 +18,7 @@ import BunkerState from '@/components/BunkerState/BunkerState'
 
 const Final = () => {
 
-    const { code, playerId, players, updatePlayers, finale, setFinale, bunkerStats, setBunkerStats } = useGameInfo((state) => {
+    const { code, playerId, players, updatePlayers, finale, setFinale, bunkerStats, setBunkerStats, bunkerRelatives, setBunkerRelatives } = useGameInfo((state) => {
         return {
             code: state.code,
             playerId: state.playerId,
@@ -28,6 +28,8 @@ const Final = () => {
             setFinale: state.setFinale,
             bunkerStats: state.bunkerStats,
             setBunkerStats: state.setBunkerStats,
+            bunkerRelatives: state.bunkerRelatives,
+            setBunkerRelatives: state.setBunkerRelatives,
         }
     })
 
@@ -35,8 +37,6 @@ const Final = () => {
     if (code === '') redirect('/')
 
     const router = useRouter()
-
-    const [bunkerRelatives, setBunkerRelatives] = useState<BunkerRelatives>()
 
     const [open, setOpen] = useState(false)
 
@@ -67,21 +67,26 @@ const Final = () => {
 
     const [showRoundInfoAlert, setShowRoundInfoAlert] = useState(false)
 
-
     useEffect(() => {
-        if (turn === 'Eliminated' && round !== 1) {
+        if (turn === 'Eliminated' && round && round !== 1) {
             setShowRoundInfoAlert(true)
         }
     }, [turn, round])
 
     useEffect(() => {
-        socket.emit('initialize_finale', { code })
+        socket.emit('get_first_stage_game_results', { code })
     }, [])
 
+
     useEffect(() => {
-        socket.on('initialize_finale_response', (game: GameType) => {
-            console.log('init')
-            console.log(game)
+
+        socket.on("wait_until_the_end_of_calculation", () => {
+            setTimeout(() => {
+                socket.emit('get_first_stage_game_results', { code })
+            }, 1000)
+        })
+
+        socket.on('game_results', (game: GameType) => {
             setBunkerStats(game.bunkerStats)
             setBunkerRelatives(game.bunkerRelatives)
             setFinale(game.finale)
@@ -111,11 +116,12 @@ const Final = () => {
         })
 
         return () => {
-            socket.off("initialize_finale_response")
+            socket.off("wait_until_the_end_of_calculation")
+            socket.off("game_results")
             socket.off("event_picked")
             socket.off("pick_response_response")
         }
-    }, [eventIds, pickedEvent, pickedEventId, updatePlayers, code, toast, setFinale, setBunkerStats])
+    }, [eventIds, pickedEvent, pickedEventId, updatePlayers, code, setFinale, setBunkerStats, setBunkerRelatives])
 
     const handleChooseEventClick = (eventId: number) => {
         socket.emit("pick_event", { code, eventId })

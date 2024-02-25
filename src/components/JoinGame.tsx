@@ -9,6 +9,8 @@ import { useGameInfo } from '@/hooks/useGameInfo'
 import { useToast } from "@/components/ui/use-toast"
 import { useRouter } from 'next/navigation'
 import { responseType, PlayerType, JoinDataResponse } from '@/types/types'
+import usePlayerAndCodeSessionStorage from '@/hooks/usePlayerAndCodeSessionStorage'
+import CodeInput from './CodeInput'
 
 
 const JoinGame: React.FC = () => {
@@ -16,7 +18,7 @@ const JoinGame: React.FC = () => {
     const router = useRouter();
     const { toast } = useToast()
 
-    const [codeValue, setCodeValue] = useState('');
+    const [sessionPlayerName, sessionCode] = usePlayerAndCodeSessionStorage()
 
     const codeInput = useRef<HTMLInputElement>(null)
     const nameInput = useRef<HTMLInputElement>(null)
@@ -24,16 +26,22 @@ const JoinGame: React.FC = () => {
 
     const [joinOrCreateInProgress, setJoinOrCreateInProgress] = useState(false)
 
+
     const setGameInfo = useGameInfo((state) => state.initialStart)
+
 
     useEffect(() => {
         socket.on("create_game_response", (response: responseType<{ code: string, name: string, players: PlayerType[] }>) => {
+            window.sessionStorage.setItem("playerName", response.data.name)
+            window.sessionStorage.setItem("code", response.data.code)
             setGameInfo(response.data.code, response.data.name, 1, 0, response.data.players, false, 1, [], null, null, null)
             router.push('/waiting')
         })
 
         socket.on("join_game_response", (response: responseType<JoinDataResponse>) => {
             if (response.status === 'success') {
+                window.sessionStorage.setItem("playerName", response.data.name)
+                window.sessionStorage.setItem("code", response.data.game.code)
                 setGameInfo(response.data.game.code,
                     response.data.name,
                     response.data.game.round,
@@ -134,17 +142,12 @@ const JoinGame: React.FC = () => {
         }
     }
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const uppercaseValue = event.target.value.toUpperCase();
-        setCodeValue(uppercaseValue);
-    };
-
 
     return (
         <div className='flex flex-col gap-5 items-center'>
             <form onSubmit={joinGame} className='flex gap-4 items-center flex-col border p-8 rounded-xl'>
-                <Input value={codeValue} onChange={handleInputChange} placeholder='Код комнаты' ref={codeInput}></Input>
-                <Input placeholder='Ваше имя' ref={nameInput}></Input>
+                <CodeInput code={sessionCode} codeInput={codeInput} />
+                <Input defaultValue={sessionPlayerName} placeholder='Ваше имя' ref={nameInput}></Input>
                 <Button disabled={joinOrCreateInProgress} type='submit'>Присоединиться</Button>
             </form>
             <p>или</p>

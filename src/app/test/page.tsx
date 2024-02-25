@@ -20,18 +20,19 @@ const Test = () => {
 
     const router = useRouter();
 
-    const { players, updatePlayers, finale, setFinale, bunkerStats, setBunkerStats } = useGameInfo((state) => {
+    const { players, playerId, updatePlayers, finale, setFinale, bunkerStats, setBunkerStats, bunkerRelatives, setBunkerRelatives } = useGameInfo((state) => {
         return {
             players: state.players,
+            playerId: state.playerId,
             updatePlayers: state.updatePlayers,
             finale: state.finale,
             setFinale: state.setFinale,
             bunkerStats: state.bunkerStats,
             setBunkerStats: state.setBunkerStats,
+            bunkerRelatives: state.bunkerRelatives,
+            setBunkerRelatives: state.setBunkerRelatives,
         }
     })
-
-    const [bunkerRelatives, setBunkerRelatives] = useState<BunkerRelatives>()
 
     const [open, setOpen] = useState(false)
 
@@ -57,7 +58,6 @@ const Test = () => {
 
     const survivingPlayerTurnId = finale?.survivingPlayerTurnId
     const eliminatedPlayerTurnId = finale?.eliminatedPlayerTurnId
-
     const prevRoundStatistics = finale?.prevRoundStatistics
 
     const [showRoundInfoAlert, setShowRoundInfoAlert] = useState(false)
@@ -164,11 +164,11 @@ const Test = () => {
 
                     <div className='md:w-1/2'>
                         {turn === 'Eliminated' && eventIds &&
-                            <PickEventDisplay eventIds={eventIds} handleChooseEventClick={handleChooseEventClick} playerName={players[finale.eventTargetPlayerId].name} open={open} />
+                            <PickEventDisplay muted={playerId !== eliminatedPlayerTurnId} eventIds={eventIds} handleChooseEventClick={handleChooseEventClick} playerName={players[finale.eventTargetPlayerId].name} open={open} />
                         }
 
                         {turn === 'Survivors' && pickedEvent && finale &&
-                            <PickResponseDisplay event={pickedEvent} handleChooseResponseClick={handleChooseResponseClick} medicines={bunkerStats?.Medicines.value ? bunkerStats?.Medicines.value : 0} playerName={players[finale.eventTargetPlayerId].name} open={open} />
+                            <PickResponseDisplay muted={playerId !== survivingPlayerTurnId} event={pickedEvent} handleChooseResponseClick={handleChooseResponseClick} medicines={bunkerStats?.Medicines.value ? bunkerStats?.Medicines.value : 0} playerName={players[finale.eventTargetPlayerId].name} open={open} />
                         }
                     </div>
                 </div>

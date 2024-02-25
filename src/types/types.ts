@@ -69,7 +69,7 @@ export type FinaleType = {
     eliminatedPlayerTurnId: number
     eventTargetPlayerId: number
     prevRoundStatistics: FinaleRoundStatistic
-    isInitialized: boolean
+    CalculationFinished: boolean
 }
 
 export type GameType = {

@@ -13,8 +13,6 @@ import {
     DrawerTrigger,
 } from "@/components/ui/drawer"
 import { Button } from '../ui/button';
-import { Events } from '@/data/data';
-import { cn } from '@/lib/utils';
 import PickEventOptions from './PickEventOptions';
 
 const PickEventDisplay = ({ muted, eventIds, handleChooseEventClick, playerName, open }: { muted: boolean, eventIds: number[], handleChooseEventClick: (eventId: number) => void, playerName: string, open: boolean }) => {
@@ -27,8 +25,6 @@ const PickEventDisplay = ({ muted, eventIds, handleChooseEventClick, playerName,
             setDrawerOpen(true)
         }
     }, [open])
-
-    const mutedStyles = cn()
 
     if (isDesktop) {
         return (
