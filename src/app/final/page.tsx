@@ -2,10 +2,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useGameInfo } from '../../hooks/useGameInfo'
 
-import { toast, useToast } from "@/components/ui/use-toast"
+import { toast, } from "@/components/ui/use-toast"
 import { socket } from '@/socket'
-import { BunkerRelatives, BunkerStatsType, CardType, FinaleType, GameType } from '../../types/types';
-import { redirect, useRouter, useSearchParams } from 'next/navigation';
+import { BunkerStatsType, FinaleType, GameType } from '../../types/types';
+import { redirect, useRouter } from 'next/navigation';
 import CopyCodeBadge from '@/components/CopyCodeBadge'
 import PlayerCard from '@/components/PlayerCard'
 import { ModeToggle } from '@/components/ModeToggle'

@@ -6,10 +6,9 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { CardType, Charachteristic, PlayerType } from '@/types/types'
+import { Charachteristic, PlayerType } from '@/types/types'
 import Characteristic from './Characteristic'
 import { Input } from './ui/input'
-import { cn } from '@/lib/utils'
 
 
 const PreparationPlayerCard = React.memo(function PreparationPlayerCard({ player, nameInput }: { player: PlayerType, nameInput: React.Ref<HTMLInputElement> }) {

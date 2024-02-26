@@ -145,17 +145,20 @@ const JoinGame: React.FC = () => {
 
     return (
         <div className='flex flex-col gap-5 items-center'>
-            <form onSubmit={joinGame} className='flex gap-4 items-center flex-col border p-8 rounded-xl'>
-                <CodeInput code={sessionCode} codeInput={codeInput} />
-                <Input defaultValue={sessionPlayerName} placeholder='Ваше имя' ref={nameInput}></Input>
-                <Button disabled={joinOrCreateInProgress} type='submit'>Присоединиться</Button>
+            <form onSubmit={joinGame} className='flex gap-6 bg-background items-center flex-col border py-8 px-6 rounded-xl shadow-md shadow-accent'>
+                <div className='flex gap-4 flex-col'>
+                    <CodeInput code={sessionCode} codeInput={codeInput} />
+                    <Input defaultValue={sessionPlayerName} placeholder='Ваше имя' ref={nameInput}></Input>
+                </div>
+                <Button variant={'outline'} disabled={joinOrCreateInProgress} type='submit'>Присоединиться</Button>
             </form>
-            <p>или</p>
-            <form onSubmit={createGame} className='flex gap-4 items-center flex-col border p-8 rounded-xl'>
+            <p className='bg-background px-4 py-2 rounded-full outline-accent outline shadow-md shadow-accent'>или</p>
+            <form onSubmit={createGame} className='flex gap-6 bg-background items-center flex-col border py-8 px-6 rounded-xl shadow-md shadow-accent'>
                 <Input placeholder='Ваше имя' ref={createNameInput}></Input>
-                <Button disabled={joinOrCreateInProgress} type='submit'>Создать новый бункер</Button>
+                <Button variant={'outline'} disabled={joinOrCreateInProgress} type='submit'>Создать новый бункер</Button>
             </form>
         </div >
+
     )
 }
 

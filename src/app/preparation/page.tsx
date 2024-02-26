@@ -77,18 +77,20 @@ const Preparation = () => {
                 <p>{`Готовы к игре: ${readyPlayers}/${players.length}`}</p>
                 <CopyCodeBadge code={code} />
             </div>
-            <PreparationPlayerCard nameInput={nameInput} player={player}></PreparationPlayerCard>
-            <div>
-                <h1 className='text-2xl text-center'>Ваши карточки действий</h1>
-                <div className='flex gap-4 mt-2'>
-                    {players[playerId].actionCards.map((actionCard, index) => {
-                        return (
-                            <ActionCardPreview key={`actionCard${index}`} actionData={actionCard} />
-                        )
-                    })}
+            <div className='flex flex-col gap-4 md:flex-row md:gap-20'>
+                <PreparationPlayerCard nameInput={nameInput} player={player}></PreparationPlayerCard>
+                <div>
+                    <h1 className='text-2xl text-center md:hidden'>Ваши карточки действий</h1>
+                    <div className='flex gap-4 mt-2 flex-row md:flex-col h-full md:mt-0'>
+                        {players[playerId].actionCards.map((actionCard, index) => {
+                            return (
+                                <ActionCardPreview key={`actionCard${index}`} actionData={actionCard} />
+                            )
+                        })}
+                    </div>
                 </div>
             </div>
-            <Button disabled={ready} onClick={readyHandler}>{ready ? 'Вы готовы' : 'Готов'}</Button>
+            <Button variant={'outline'} disabled={ready} className='px-10' onClick={readyHandler}>{ready ? 'Вы готовы' : 'Готов'}</Button>
         </div>
     )
 }

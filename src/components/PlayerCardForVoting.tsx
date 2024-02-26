@@ -18,7 +18,7 @@ const PlayerCardForVoting = React.memo(function PlayerCard({ player, selected, o
 
     const selectedCardStyles = cn('scale-105 bg-secondary')
 
-    const cardStyles = selected ? cn("w-[350px]", selectedCardStyles) : "w-[350px]"
+    const cardStyles = selected ? cn("w-[350px] cursor-pointer", selectedCardStyles) : "w-[350px] cursor-pointer"
 
     return (
         <Card onClick={onClick} className={cardStyles}>

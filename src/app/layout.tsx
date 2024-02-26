@@ -22,16 +22,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn("min-h-screen bg-background font-sans antialiased", inter.variable)}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-          <Toaster />
-        </ThemeProvider>
+      <body className={cn("min-h-screen w-full font-sans relative", inter.variable)}>
+        <main>
+          <div className='fixed w-full min-h-screen dark:bg-black bg-white dark:bg-dot-white/[0.25] bg-dot-black/[0.25] -z-10'>
+            <div className='absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white md:[mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)] [mask-image:radial-gradient(ellipse_at_center,transparent_10%,black)] -z-10'></div>
+          </div>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <Toaster />
+          </ThemeProvider>
+
+        </main>
+
       </body>
     </html>
   )

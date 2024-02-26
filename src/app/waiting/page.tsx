@@ -86,7 +86,7 @@ const Waiting = () => {
                 }
                 )}
             </div>
-            {isHost && <Button className='max-w-fit self-end' disabled={players.length < minPlayers} onClick={startGame}>Начать</Button>}
+            {isHost && <Button className='max-w-fit self-center px-8 py-6 text-2xl rounded-2xl' variant={'outline'} disabled={players.length < minPlayers} onClick={startGame}>Старт</Button>}
         </div >
     )
 }

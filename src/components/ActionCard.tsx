@@ -58,15 +58,11 @@ const ActionCard = (props: { ready: boolean, actionCardId: number, actionData: A
     }
 
     return (
-        <Card className={cn("flex-1", cardStyles)}>
+        <Card className={cn("flex flex-col", cardStyles)}>
             <CardHeader>
                 <CardTitle className='lg:text-xl text-lg'>{props.actionData.name}</CardTitle>
-                <CardDescription className={cn(descriptionStyles)}>
-                    <p>{props.actionData.key}</p>
-                    <p>{props.actionData.char}</p>
-                </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className='flex flex-col items-start flex-1 justify-between'>
                 {props.actionData.type !== 'no pick' &&
                     <Select disabled={props.actionData.used} onValueChange={(value) => { pickPlayerHandler(Number(value)) }}>
                         <SelectTrigger className="w-full">
