@@ -173,6 +173,7 @@ export type ActionCardType = {
     type: ActionTypes,
     char: charKeys,
     name: string,
+    description: string,
     used: boolean,
 }
 

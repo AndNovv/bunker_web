@@ -7,7 +7,7 @@ import { socket } from '@/socket'
 import { BunkerStatsType, FinaleType, GameType } from '../../types/types';
 import { redirect, useRouter } from 'next/navigation';
 import CopyCodeBadge from '@/components/CopyCodeBadge'
-import PlayerCard from '@/components/PlayerCard'
+import PlayerCard from '@/components/PlayersDisplayCards/PlayerCard'
 import { ModeToggle } from '@/components/ModeToggle'
 import PickResponseDisplay from '@/components/FinaleComponents/PickResponseDisplay'
 import PickEventDisplay from '@/components/FinaleComponents/PickEventDisplay'
@@ -132,7 +132,7 @@ const Final = () => {
     }
 
     return (
-        <div className='flex flex-col gap-6 justify-center items-center px-10 py-4'>
+        <div className='flex flex-col gap-6 justify-center items-center'>
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
                 {finale?.round && finale.maxRounds && (
@@ -143,18 +143,18 @@ const Final = () => {
                 )}
                 <CopyCodeBadge code={code} />
             </div>
-            <div className='flex flex-col gap-4 justify-center items-center'>
+            <div className='flex flex-col gap-4 justify-center items-center w-full'>
 
                 <div className='flex flex-row gap-1 flex-wrap justify-center'>
                     {finale && finale.survivingPlayersId.map((playerId, index) => {
                         const player = players[playerId]
                         return (
-                            <PlayerCard key={`player${index}`} player={player} cardType='opponent game card' />
+                            <PlayerCard key={`player${index}`} player={player} />
                         )
                     })}
                 </div>
 
-                <div>
+                <div className='flex flex-col items-center'>
                     <h2>{`Ход ${turn === 'Eliminated' ? 'Изганных' : 'Выживших'}`}</h2>
                     {turn === 'Eliminated' && typeof eliminatedPlayerTurnId === 'number' && <p>{`Ход игрока: ${players[eliminatedPlayerTurnId].name}`}</p>}
                     {turn === 'Survivors' && typeof survivingPlayerTurnId === 'number' && <p>{`Ход игрока: ${players[survivingPlayerTurnId].name}`}</p>}
@@ -165,7 +165,7 @@ const Final = () => {
 
                 <div className='flex flex-col md:flex-row mg:gap-10 gap-4 justify-center items-center w-full'>
 
-                    <div className='md:w-1/2 flex justify-center'>
+                    <div className='md:w-1/2 flex justify-center w-full'>
                         {bunkerStats && bunkerRelatives && <BunkerState bunkerStats={bunkerStats} bunkerRelatives={bunkerRelatives} />}
                     </div>
 

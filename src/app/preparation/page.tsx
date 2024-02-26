@@ -9,8 +9,9 @@ import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import CopyCodeBadge from '@/components/CopyCodeBadge'
 import { ModeToggle } from '@/components/ModeToggle'
-import PreparationPlayerCard from '@/components/PreparationPlayerCard'
+import PreparationPlayerCard from '@/components/PlayersDisplayCards/PreparationPlayerCard'
 import ActionCardPreview from '@/components/ActionCardPreview'
+import { Input } from '@/components/ui/input'
 
 
 const Preparation = () => {
@@ -56,7 +57,8 @@ const Preparation = () => {
         }
     }, [])
 
-    const readyHandler = () => {
+    const readyHandler = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
         const charachterName = nameInput.current?.value
         if (charachterName && charachterName !== '') {
             setReady(true)
@@ -71,26 +73,26 @@ const Preparation = () => {
     }
 
     return (
-        <div className='flex flex-col gap-6 justify-center items-center px-10 py-4'>
+        <div className='flex flex-col gap-6 justify-center items-center'>
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
                 <p>{`Готовы к игре: ${readyPlayers}/${players.length}`}</p>
                 <CopyCodeBadge code={code} />
             </div>
             <div className='flex flex-col gap-4 md:flex-row md:gap-20'>
-                <PreparationPlayerCard nameInput={nameInput} player={player}></PreparationPlayerCard>
-                <div>
-                    <h1 className='text-2xl text-center md:hidden'>Ваши карточки действий</h1>
-                    <div className='flex gap-4 mt-2 flex-row md:flex-col h-full md:mt-0'>
-                        {players[playerId].actionCards.map((actionCard, index) => {
-                            return (
-                                <ActionCardPreview key={`actionCard${index}`} actionData={actionCard} />
-                            )
-                        })}
-                    </div>
+                <PreparationPlayerCard player={player}></PreparationPlayerCard>
+                <div className='flex gap-4 flex-row md:flex-col md:w-60 md:mt-0'>
+                    {players[playerId].actionCards.map((actionCard, index) => {
+                        return (
+                            <ActionCardPreview key={`actionCard${index}`} actionData={actionCard} />
+                        )
+                    })}
                 </div>
             </div>
-            <Button variant={'outline'} disabled={ready} className='px-10' onClick={readyHandler}>{ready ? 'Вы готовы' : 'Готов'}</Button>
+            <form onSubmit={readyHandler} className='flex gap-4 w-full md:w-fit'>
+                <Input className='flex-1' disabled={ready} ref={nameInput} placeholder='Имя Вашего Персонажа'></Input>
+                <Button variant={'outline'} disabled={ready} type='submit'>{ready ? 'Вы готовы' : 'Готов'}</Button>
+            </form>
         </div>
     )
 }

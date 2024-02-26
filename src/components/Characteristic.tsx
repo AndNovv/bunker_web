@@ -5,8 +5,10 @@ import { CardType, Charachteristic } from '@/types/types'
 import React from 'react'
 import { useToast } from "@/components/ui/use-toast"
 
+type CharType = 'reveal' | 'open' | 'regular'
 
-const Characteristic = ({ char, cardType }: { char: Charachteristic<string, string>, cardType: CardType }) => {
+
+const Characteristic = ({ char, charType }: { char: Charachteristic<string, string>, charType: CharType }) => {
 
     const { code, playerId, players, round } = useGameInfo((state) => {
         return {
@@ -37,7 +39,7 @@ const Characteristic = ({ char, cardType }: { char: Charachteristic<string, stri
         }
     }
 
-    if (cardType === 'player game card') {
+    if (charType === 'reveal') {
 
         const bgcolor = char.hidden ? 'bg-secondary' : 'bg-accent text-[#7cc66e] cursor-default'
         return (
@@ -45,7 +47,7 @@ const Characteristic = ({ char, cardType }: { char: Charachteristic<string, stri
         )
     }
 
-    if (cardType === 'opponent game card') {
+    if (charType === 'regular') {
         if (char.hidden) {
             return (
                 <div>{`${char.title}: Неизвестно`}</div>
@@ -58,9 +60,11 @@ const Characteristic = ({ char, cardType }: { char: Charachteristic<string, stri
         }
     }
 
-    return (
-        <div>{`${char.title}: ${char.value}`}</div>
-    )
+    if (charType === 'open') {
+        return (
+            <div>{`${char.title}: ${char.value}`}</div>
+        )
+    }
 }
 
 export default Characteristic

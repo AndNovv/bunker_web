@@ -10,7 +10,7 @@ import CopyCodeBadge from '@/components/CopyCodeBadge'
 import { useSearchParams } from 'next/navigation'
 import { ModeToggle } from '@/components/ModeToggle'
 import { useToast } from '@/components/ui/use-toast';
-import PlayerCardForVoting from '@/components/PlayerCardForVoting';
+import PlayerCardForVoting from '@/components/PlayersDisplayCards/PlayerCardForVoting';
 
 
 const Voting = () => {
@@ -90,7 +90,7 @@ const Voting = () => {
     }
 
     return (
-        <div className='flex flex-col gap-4 justify-center items-center px-10 py-4'>
+        <div className='flex flex-col gap-4 justify-center items-center'>
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
                 <p>{`Проголосовало: ${readyCount}/${countOfNotEliminatedPlayers}`}</p>
@@ -98,7 +98,7 @@ const Voting = () => {
             </div>
             {secondVote && <h2 className='text-center text-xl'>{`Голоса разделились между ${secondVotingOptions.length} игроками. Попробуйте обсудить ваше решение еще раз, если вы снова не сможете договориться, игру покинет случайный кандидат!`}</h2>}
 
-            <div className='flex flex-row flex-wrap gap-5'>
+            <div className='flex flex-row flex-wrap gap-5 justify-center w-full'>
                 {!secondVote && players.map((player, index) => {
                     if (!player.eliminated) {
                         return (

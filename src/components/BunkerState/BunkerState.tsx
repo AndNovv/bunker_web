@@ -33,7 +33,7 @@ const BunkerState = ({ bunkerStats, bunkerRelatives }: { bunkerStats: BunkerStat
     }
 
     return (
-        <Card className="max-w-fit">
+        <Card className="w-full max-w-fit">
             <CardHeader>
                 <CardTitle className='text-center'>Бункер</CardTitle>
             </CardHeader>

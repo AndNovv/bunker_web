@@ -54,7 +54,7 @@ const VotingResults = () => {
     }
 
     return (
-        <div className='flex flex-col gap-4 justify-center items-center px-10 py-4'>
+        <div className='flex flex-col gap-4 justify-center items-center'>
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
                 <CopyCodeBadge code={code} />

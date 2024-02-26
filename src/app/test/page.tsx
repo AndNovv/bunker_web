@@ -9,7 +9,7 @@ import BunkerState from '@/components/BunkerState/BunkerState';
 import { Events } from '@/data/data';
 import { useToast } from '@/components/ui/use-toast';
 import FinaleNewRoundInfoAlert from '@/components/FinaleComponents/FinaleNewRoundInfoAlert';
-import PlayerCard from '@/components/PlayerCard';
+import PlayerCard from '@/components/PlayersDisplayCards/PlayerCard';
 import { Button } from '@/components/ui/button';
 import PickEventDisplay from '@/components/FinaleComponents/PickEventDisplay';
 import PickResponseDisplay from '@/components/FinaleComponents/PickResponseDisplay';
@@ -125,7 +125,7 @@ const Test = () => {
     }
 
     return (
-        <div className='flex flex-col gap-6 justify-center items-center px-10 py-4'>
+        <div className='flex flex-col gap-6 justify-center items-center'>
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
                 {finale?.round && finale.maxRounds && (
@@ -142,7 +142,7 @@ const Test = () => {
                     {finale && finale.survivingPlayersId.map((playerId, index) => {
                         const player = players[playerId]
                         return (
-                            <PlayerCard key={`player${index}`} player={player} cardType='opponent game card' />
+                            <PlayerCard key={`player${index}`} player={player} />
                         )
                     })}
                 </div>

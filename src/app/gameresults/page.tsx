@@ -1,5 +1,5 @@
 "use client"
-import PlayerCard from '@/components/PlayerCard'
+import PlayerCard from '@/components/PlayersDisplayCards/PlayerCard'
 import { useGameInfo } from '@/hooks/useGameInfo'
 import { calculateMaxAnxietyLevel } from '@/lib/utils'
 import { redirect, useRouter, useSearchParams } from 'next/navigation'
@@ -39,7 +39,7 @@ const GameResults = () => {
             <p className='text-center px-4 text-muted-foreground'>{reason}</p>
             <div className='flex gap-2 flex-wrap justify-center'>
                 {winners.map((player, index) => {
-                    return <PlayerCard key={`player${index}`} player={player} cardType='opponent game card' />
+                    return <PlayerCard key={`player${index}`} player={player} />
 
                 }
                 )}

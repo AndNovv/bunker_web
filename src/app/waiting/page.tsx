@@ -62,7 +62,7 @@ const Waiting = () => {
     }
 
     return (
-        <div className='flex flex-col gap-10 px-10 py-10'>
+        <div className='flex flex-col gap-10'>
             <div className='flex justify-between items-center'>
                 <ModeToggle />
                 <CopyCodeBadge code={code} />

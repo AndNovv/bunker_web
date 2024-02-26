@@ -7,7 +7,7 @@ const PickEventOptions = ({ handleChooseEventClick, eventIds, muted, playerName 
     return (
       eventIds.map((eventId, index) => {
         return (
-          <div className='border bg-accent text-[#cfcfcf61] p-4 rounded-md w-full' key={`event${index}`}>
+          <div className='border bg-muted text-muted-foreground p-4 rounded-md w-full' key={`event${index}`}>
             <h2>{Events[eventId].title === 'Игрок заболел' ? `${Events[eventId].title} (${playerName})` : Events[eventId].title}</h2>
             <p className='text-muted-foreground'>{Events[eventId].description}</p>
           </div>
@@ -19,7 +19,7 @@ const PickEventOptions = ({ handleChooseEventClick, eventIds, muted, playerName 
   return (
     eventIds.map((eventId, index) => {
       return (
-        <div onClick={() => handleChooseEventClick(eventId)} className={'border p-4 rounded-md w-full hover:scale-105 hover:bg-primary transition-all cursor-pointer'} key={`event${index}`}>
+        <div onClick={() => handleChooseEventClick(eventId)} className={'border bg-card shadow-md shadow-accent p-4 rounded-md w-full hover:scale-105 hover:bg-primary transition-all cursor-pointer'} key={`event${index}`}>
           <h2>{Events[eventId].title === 'Игрок заболел' ? `${Events[eventId].title} (${playerName})` : Events[eventId].title}</h2>
           <p className='text-muted-foreground'>{Events[eventId].description}</p>
         </div>

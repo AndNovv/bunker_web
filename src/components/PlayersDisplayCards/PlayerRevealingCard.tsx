@@ -7,27 +7,19 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { Charachteristic, PlayerType } from '@/types/types'
-import Characteristic from './Characteristic'
-import { cn } from '@/lib/utils'
+import Characteristic from '../Characteristic'
 
 
-const PlayerCardForVoting = React.memo(function PlayerCard({ player, selected, onClick }: { player: PlayerType, selected: boolean, onClick: () => void }) {
+const PlayerRevealingCard = React.memo(function PlayerCard({ player }: { player: PlayerType }) {
 
     type keys = keyof typeof player.characteristics
     const charachteristicNames = Object.keys(player.characteristics) as keys[]
 
-    const selectedCardStyles = cn('scale-105 bg-secondary')
-
-    const cardStyles = selected ? cn("w-[350px] cursor-pointer", selectedCardStyles) : "w-[350px] cursor-pointer"
 
     return (
-        <Card onClick={onClick} className={cardStyles}>
+        <Card className="w-full max-w-[350px]">
             <CardHeader>
                 <CardTitle>{player.name}</CardTitle>
-                <CardDescription>
-                    <p>{player.host ? 'Хост' : 'Игрок'}</p>
-                    <p>{player.eliminated ? 'Изгнан' : 'В игре'}</p>
-                </CardDescription>
             </CardHeader>
             <CardContent>
                 <div className='flex flex-col gap-2'>
@@ -36,7 +28,7 @@ const PlayerCardForVoting = React.memo(function PlayerCard({ player, selected, o
                         const value = (typeof playerChar.value === "string") ? playerChar.value : playerChar.value.name
                         const charData: Charachteristic<string, string> = { key: playerChar.key, title: playerChar.title, value: value, hidden: playerChar.hidden }
                         return (
-                            <Characteristic key={`char${index}`} cardType={"opponent game card"} char={charData} />
+                            <Characteristic key={`char${index}`} charType={'reveal'} char={charData} />
                         )
                     })}
                 </div>
@@ -45,4 +37,4 @@ const PlayerCardForVoting = React.memo(function PlayerCard({ player, selected, o
     )
 })
 
-export default PlayerCardForVoting
+export default PlayerRevealingCard
