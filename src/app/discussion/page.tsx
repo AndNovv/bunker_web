@@ -85,42 +85,41 @@ const Discussion = () => {
     }
 
     return (
-        <div className='flex flex-col gap-2 justify-center items-center'>
+        <div className='flex flex-col gap-6 justify-center items-center'>
             <div className='flex justify-between items-center w-full'>
                 <ModeToggle />
                 <p>{`Готовы ${readyPlayers}/${countOfNotEliminatedPlayers}`}</p>
                 <CopyCodeBadge code={code} />
             </div>
-            <div className='flex flex-col gap-4'>
-                {/* <p className='text-center text-xl'>Время для общего обсуждения. Не забывайте о том, что у вас есть Карты Действия!</p> */}
-                {/* {!!currentRoundKickCount && <p className='text-center text-xl'>{`В предстоящем голосовании Вам нужно избавиться от ${currentRoundKickCount} ${currentRoundKickCount === 1 ? 'Игрока' : 'Игроков'}`}</p>} */}
-                <div className='flex flex-wrap gap-2 justify-center'>
-                    {players.map((player, index) => {
-                        let cardType: CardType = player.id === playerId ? 'player game card' : 'opponent game card'
-                        if (player.eliminated) {
-                            return <EliminatedPlayerCard key={`player${index}`} player={player} />
-                        }
-                        else if (player.id === playerId) {
-                            return <PlayerCard key={`player${index}`} player={player} />
-                        }
-                        else {
-                            return (
-                                <OpponentCard key={`player${index}`} player={player} />
-                            )
-                        }
-                    })}
-                </div>
-            </div>
-            <div className='mt-4'>
-                <div className='flex gap-4 mt-2'>
-                    {players[playerId].actionCards.map((actionCard, index) => {
-                        return (
-                            <ActionCard ready={ready} key={`actionCard${index}`} actionCardId={index} actionData={actionCard} />
-                        )
-                    })
+
+            {/* <p className='text-center text-xl'>Время для общего обсуждения. Не забывайте о том, что у вас есть Карты Действия!</p> */}
+            {/* {!!currentRoundKickCount && <p className='text-center text-xl'>{`В предстоящем голосовании Вам нужно избавиться от ${currentRoundKickCount} ${currentRoundKickCount === 1 ? 'Игрока' : 'Игроков'}`}</p>} */}
+            <div className='flex flex-wrap gap-4 justify-center'>
+                {players.map((player, index) => {
+                    let cardType: CardType = player.id === playerId ? 'player game card' : 'opponent game card'
+                    if (player.eliminated) {
+                        return <EliminatedPlayerCard key={`player${index}`} player={player} />
                     }
-                </div>
+                    else if (player.id === playerId) {
+                        return <PlayerCard key={`player${index}`} player={player} />
+                    }
+                    else {
+                        return (
+                            <OpponentCard key={`player${index}`} player={player} />
+                        )
+                    }
+                })}
             </div>
+
+            <div className='flex gap-4'>
+                {players[playerId].actionCards.map((actionCard, index) => {
+                    return (
+                        <ActionCard ready={ready} key={`actionCard${index}`} actionCardId={index} actionData={actionCard} />
+                    )
+                })
+                }
+            </div>
+
             <Button className='mt-3' variant={'outline'} disabled={ready || eliminated} onClick={readyHandler}>{currentRoundKickCount ? 'Готов к голосованию' : 'Готов к следующему раунду'}</Button>
         </div>
     )

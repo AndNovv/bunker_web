@@ -154,7 +154,7 @@ const JoinGame: React.FC = () => {
             </form>
             <p className='bg-background px-4 py-2 rounded-full outline-accent outline shadow-md shadow-accent'>или</p>
             <form onSubmit={createGame} className='flex gap-6 bg-background items-center flex-col border py-8 px-6 rounded-xl shadow-md shadow-accent'>
-                <Input placeholder='Ваше имя' ref={createNameInput}></Input>
+                <Input defaultValue={sessionPlayerName} placeholder='Ваше имя' ref={createNameInput}></Input>
                 <Button variant={'outline'} disabled={joinOrCreateInProgress} type='submit'>Создать новый бункер</Button>
             </form>
         </div >

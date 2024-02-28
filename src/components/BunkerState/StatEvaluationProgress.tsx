@@ -8,7 +8,9 @@ const StatEvaluationProgress = ({ stat }: { stat: RelativeStat<string> }) => {
 
     return (
         <div>
-            <h3 className='mb-1'>{`${stat.title} Среднее: ${stat.expected} Ваше: ${stat.real}`}</h3>
+            {/* dev stats */}
+            {/* <h3 className='mb-1'>{`${stat.title} Среднее: ${stat.expected} Ваше: ${stat.real}`}</h3> */}
+            <h3 className='mb-1'>{stat.title}</h3>
             <div className='h-10 w-full rounded-md border flex flex-row overflow-hidden divide-x divide-secondary'>
                 {icons.map((icon, index) => {
                     return <div key={`icon ${icon.key}`} className={`flex justify-center items-center w-full h-full ${stat.value === index ? 'bg-primary' : null}`}>{icon}</div>

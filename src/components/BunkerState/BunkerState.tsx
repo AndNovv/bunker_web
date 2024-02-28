@@ -10,10 +10,11 @@ import { Progress } from '../ui/progress'
 import { useGameInfo } from '@/hooks/useGameInfo'
 import StatEvaluationProgress from './StatEvaluationProgress'
 import BunkerSystemState from './BunkerSystemState'
-import { calculateMaxAnxietyLevel } from '@/lib/utils'
+import { calculateMaxAnxietyLevel, cn } from '@/lib/utils'
 
+type sizeType = 'small' | 'regular'
 
-const BunkerState = ({ bunkerStats, bunkerRelatives }: { bunkerStats: BunkerStatsType, bunkerRelatives: BunkerRelatives }) => {
+const BunkerState = ({ bunkerStats, bunkerRelatives, size = 'regular' }: { bunkerStats: BunkerStatsType, bunkerRelatives: BunkerRelatives, size?: sizeType }) => {
 
     const { players } = useGameInfo((state) => {
         return {
@@ -33,7 +34,7 @@ const BunkerState = ({ bunkerStats, bunkerRelatives }: { bunkerStats: BunkerStat
     }
 
     return (
-        <Card className="w-full max-w-fit">
+        <Card className={cn("w-full max-w-fit", size === 'small' ? 'scale-90' : null)}>
             <CardHeader>
                 <CardTitle className='text-center'>Бункер</CardTitle>
             </CardHeader>
@@ -45,15 +46,19 @@ const BunkerState = ({ bunkerStats, bunkerRelatives }: { bunkerStats: BunkerStat
                         <Progress className='w-full h-8' value={anxietyPercentage} />
                     </div>
 
-                    <div className='flex flex-row justify-center gap-4'>
-                        <div className='border rounded-md p-3'>
-                            <p className='mb-1'>Продовольствие</p>
+                    <div className='flex flex-row justify-center gap-2'>
+                        <div className='border rounded-md p-3 flex-1'>
+                            <div className='mb-1'>
+                                Продовольствие
+                            </div>
                             <p className='whitespace-nowrap'>{`Запасы: ${bunkerStats.Food.value}`}</p>
                             <p className='whitespace-nowrap'>{`Потребление: ${bunkerStats['Food Consumption'].value}`}</p>
                         </div>
 
-                        <div className='border rounded-md p-3'>
-                            <p className='mb-1'>Медикаменты</p>
+                        <div className='border rounded-md p-3 flex-1'>
+                            <p className='mb-1'>
+                                Медикаменты
+                            </p>
                             <p className='whitespace-nowrap'>{`Запасы: ${bunkerStats.Medicines.value}`}</p>
                             <p className='whitespace-nowrap'>{`Потребление: ${bunkerStats['Med Consumption'].value}`}</p>
                         </div>

@@ -1,5 +1,6 @@
 import { EventResponse, EventType } from '@/types/types'
 import React from 'react'
+import { Card, CardTitle } from '../ui/card'
 
 
 const PickResponseOptions = ({ handleChooseResponseClick, event, muted, medicines }: { handleChooseResponseClick: (eventId: number) => void, event: EventType, muted: boolean, medicines: number }) => {
@@ -21,9 +22,9 @@ const PickResponseOptions = ({ handleChooseResponseClick, event, muted, medicine
         return (
             event.responses.map((response, index) => {
                 return (
-                    <div className='border bg-accent text-[#cfcfcf61] p-4 rounded-md w-full' key={`event${index}`}>
-                        <h2>{response.title}</h2>
-                    </div>
+                    <Card className={'muted text-muted-foreground w-full p-4'} key={`event${index}`}>
+                        <CardTitle className='text-lg'>{response.title}</CardTitle>
+                    </Card>
                 )
             })
         )
@@ -34,16 +35,16 @@ const PickResponseOptions = ({ handleChooseResponseClick, event, muted, medicine
 
             if (!VariantIsValid(response)) {
                 return (
-                    <div className='border bg-accent text-[#cfcfcf61] p-4 rounded-md w-full' key={`event${index}`}>
-                        <h2>{response.title}</h2>
-                    </div>
+                    <Card className={'muted text-muted-foreground w-full p-4'} key={`event${index}`}>
+                        <CardTitle className='text-lg'>{response.title}</CardTitle>
+                    </Card>
                 )
             }
 
             return (
-                <div onClick={() => handleChooseResponseClick(index)} className='border p-4 rounded-md w-full hover:scale-105 hover:bg-primary transition-all cursor-pointer' key={`event${index}`}>
-                    <h2>{response.title}</h2>
-                </div>
+                <Card onClick={() => handleChooseResponseClick(index)} className={'w-full hover:scale-105 hover:bg-primary transition-all cursor-pointer p-4'} key={`event${index}`}>
+                    <CardTitle className='text-lg'>{response.title}</CardTitle>
+                </Card>
             )
         })
     )

@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useGameInfo } from '../../hooks/useGameInfo'
 
 import { toast, } from "@/components/ui/use-toast"

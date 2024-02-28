@@ -34,7 +34,7 @@ const GameResults = () => {
         }))
 
     return (
-        <div className='flex flex-col justify-center items-center gap-2 mt-4 text-lg'>
+        <div className='flex flex-col justify-center items-center gap-2 text-lg'>
             <p className='text-center'>{winningSide === 'Survivors' ? 'Победили Выжившие' : 'Победили Изганные'}</p>
             <p className='text-center px-4 text-muted-foreground'>{reason}</p>
             <div className='flex gap-2 flex-wrap justify-center'>
