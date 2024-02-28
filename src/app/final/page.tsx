@@ -43,15 +43,18 @@ const Final = () => {
     const round = finale?.round
     const maxAnxietyLevel = calculateMaxAnxietyLevel(players.length)
 
-    const checkForEndOfTheGame = () => {
-        if (bunkerStats && bunkerStats.Anxiety.value >= maxAnxietyLevel) {
-            router.push('/gameresults?reason=Напряженность в бункере поднялась до предела')
-        }
-        else if (finale && finale.survivingPlayersId.length === 0) {
+    const endOfTheGame = () => {
+        if (finale && finale.survivingPlayersId.length === 0) {
             router.push('/gameresults?reason=Все выжившие погибли')
         }
         else if (finale && finale.round >= finale.maxRounds - 1) {
             router.push('/gameresults?reason=Выжившие смогли пережить 10 месяцев в бункере')
+        }
+        else if (bunkerStats && bunkerStats.Anxiety.value >= maxAnxietyLevel) {
+            router.push('/gameresults?reason=Напряженность в бункере поднялась до предела')
+        }
+        else {
+            return false
         }
     }
 
@@ -69,7 +72,9 @@ const Final = () => {
 
     useEffect(() => {
         if (turn === 'Eliminated' && round && round !== 1) {
-            setShowRoundInfoAlert(true)
+            if (!endOfTheGame()) {
+                setShowRoundInfoAlert(true)
+            }
         }
     }, [turn, round])
 
@@ -112,7 +117,6 @@ const Final = () => {
             updatePlayers(game.players)
             setBunkerStats(game.bunkerStats)
             setBunkerRelatives(game.bunkerRelatives)
-            checkForEndOfTheGame()
         })
 
         return () => {
@@ -170,11 +174,11 @@ const Final = () => {
                     </div>
 
                     <div className='md:w-1/2'>
-                        {turn === 'Eliminated' && eventIds &&
+                        {turn === 'Eliminated' && eventIds && players.length > 0 &&
                             <PickEventDisplay muted={playerId !== finale.eliminatedPlayerTurnId} eventIds={eventIds} handleChooseEventClick={handleChooseEventClick} playerName={players[finale.eventTargetPlayerId].name} open={open} />
                         }
 
-                        {turn === 'Survivors' && pickedEvent && finale && bunkerStats &&
+                        {turn === 'Survivors' && pickedEvent && finale && bunkerStats && players.length > 0 &&
                             <PickResponseDisplay muted={playerId !== finale.survivingPlayerTurnId} event={pickedEvent} handleChooseResponseClick={handleChooseResponseClick} medicines={bunkerStats.Medicines.value} playerName={players[finale.eventTargetPlayerId].name} open={open} />
                         }
                     </div>

@@ -21,14 +21,13 @@ import { ModeToggle } from '@/components/ModeToggle'
 
 const Waiting = () => {
 
-    const { code, name, players, playerId, addNewPlayer, initialStart, updateRoundsFlow } = useGameInfo((state) => {
+    const { code, name, players, playerId, addNewPlayer, updateRoundsFlow } = useGameInfo((state) => {
         return {
             code: state.code,
             name: state.name,
             players: state.players,
             playerId: state.playerId,
             addNewPlayer: state.addNewPlayer,
-            initialStart: state.initialStart,
             updateRoundsFlow: state.updateRoundsFlow,
         }
     })

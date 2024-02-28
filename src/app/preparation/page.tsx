@@ -79,7 +79,7 @@ const Preparation = () => {
                 <p>{`Готовы к игре: ${readyPlayers}/${players.length}`}</p>
                 <CopyCodeBadge code={code} />
             </div>
-            <div className='flex flex-col gap-4 md:flex-row md:gap-20'>
+            <div className='flex flex-col gap-4 md:flex-row md:gap-20 items-center'>
                 <PreparationPlayerCard player={player}></PreparationPlayerCard>
                 <div className='flex gap-4 flex-row md:flex-col md:w-60 md:mt-0'>
                     {players[playerId].actionCards.map((actionCard, index) => {

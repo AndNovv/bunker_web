@@ -2,8 +2,9 @@
 import PlayerCard from '@/components/PlayersDisplayCards/PlayerCard'
 import { useGameInfo } from '@/hooks/useGameInfo'
 import { calculateMaxAnxietyLevel } from '@/lib/utils'
+import { socket } from '@/socket'
 import { redirect, useRouter, useSearchParams } from 'next/navigation'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 const GameResults = () => {
 
@@ -12,13 +13,18 @@ const GameResults = () => {
 
     const router = useRouter()
 
-    const { players, finale, bunkerStats } = useGameInfo((state) => {
+    const { code, players, finale, bunkerStats } = useGameInfo((state) => {
         return {
+            code: state.code,
             players: state.players,
             finale: state.finale,
             bunkerStats: state.bunkerStats,
         }
     })
+
+    useEffect(() => {
+        socket.emit("game_ended", code)
+    }, [])
 
     if (!bunkerStats || !finale) redirect('/')
 
@@ -40,7 +46,6 @@ const GameResults = () => {
             <div className='flex gap-2 flex-wrap justify-center'>
                 {winners.map((player, index) => {
                     return <PlayerCard key={`player${index}`} player={player} />
-
                 }
                 )}
 
