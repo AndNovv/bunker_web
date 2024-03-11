@@ -2,7 +2,9 @@ import { io } from 'socket.io-client';
 
 const devServerIP = '192.168.1.27'
 
-const serverIp = process.env.NODE_ENV === 'development' ? devServerIP : 'bunker-game.online'
+const prodServerIP = '166.1.160.98'
+
+const serverIp = process.env.NODE_ENV === 'development' ? devServerIP : prodServerIP
 
 const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https'
 

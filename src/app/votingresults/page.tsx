@@ -1,12 +1,10 @@
 "use client"
 import CopyCodeBadge from '@/components/CopyCodeBadge';
 import { ModeToggle } from '@/components/ModeToggle';
-import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { numberOfRounds } from '@/data/data';
 import { useGameInfo } from '@/hooks/useGameInfo';
 import { VotingResultsType } from '@/types/types';
-import { ChevronLeft } from 'lucide-react';
 import { redirect, useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation'
 import React, { useEffect } from 'react'
