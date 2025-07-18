@@ -1,36 +1,29 @@
-Веб-приложение доступно по ссылке: [http://166.1.160.98/](http://166.1.160.98/)
+# Bunker – Онлайн игра на выживание
 
-## Getting Started
+**Bunker** — это веб-игра, в которой игроки получают случайные роли с уникальными характеристиками и пытаются убедить остальных, что именно они заслуживают место в бункере после глобального катаклизма. Мест в укрытии меньше, чем людей, а значит — придётся голосовать и исключать друг друга. Побеждает тот, кто сможет убедить всех, что он самый нужный для выживания.
 
-First, run the development server:
+**Проект доступен по ссылке:** [http://166.1.160.98/](http://166.1.160.98/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🌍 Особенности игры
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 🎲 Случайные персонажи с уникальными характеристиками: профессия, здоровье, багаж и т.д.
+- 🗳 Голосование за исключение игроков, как в "Мафии"
+- 🧑‍🤝‍🧑 Онлайн-режим с друзьями
+- 🧠 Аргументированные дебаты и социальное взаимодействие
+- ⚡ Мгновенные обновления состояния через WebSocket
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+---
 
-## Learn More
+## 🧪 Технологии
 
-To learn more about Next.js, take a look at the following resources:
+Проект построен на современном стеке:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- **Next.js 14**
+- **React 18**
+- **Tailwind CSS** 
+- **Zustand**
+- **TypeScript**
+- **Socket.IO** — real-time взаимодействие между игроками
+- **Radix UI + Framer Motion** — диалоги, анимации и плавный UX
